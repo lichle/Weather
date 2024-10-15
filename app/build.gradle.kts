@@ -1,0 +1,116 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
+
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.hilt)
+}
+
+android {
+    namespace = "com.lichle.weather"
+    compileSdk = 34
+
+    defaultConfig {
+        applicationId = "com.lichle.weather"
+        minSdk = 34
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            buildConfigField("boolean", "DEBUG", "false")
+        }
+        debug {
+            buildConfigField("boolean", "DEBUG", "true")
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+}
+
+dependencies {
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+
+    // ViewModel library
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    // LiveData (Optional, but usually used with ViewModel)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+
+    // If you're using Hilt for ViewModel injection
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+
+    //Navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    debugImplementation(libs.leakcanary.android)
+
+    implementation(libs.retrofit)
+
+    // Gson converter for Retrofit
+    implementation(libs.converter.gson)
+
+    // OkHttp for HTTP client (used by Retrofit)
+    implementation(libs.okhttp)
+
+    // OkHttp logging interceptor (optional, useful for debugging)
+    implementation(libs.logging.interceptor)
+
+    // Room dependencies
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+
+    // Optional - Room Kotlin extensions and coroutines support
+    implementation(libs.androidx.room.ktx)
+
+    implementation(libs.gson)
+
+}

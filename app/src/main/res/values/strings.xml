@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Weather</string>
+    <string name="weather_screen_title">Weather</string>
+    <string name="city_screen_title">City</string>
+    <string name="menu_back">Back</string>
+    <string name="menu_search">Search</string>
+    <string name="error_message">Error: %1$s</string>
+    <string name="dismiss_action">Dismiss</string>
+
+    <!--Weather screen strings-->
+    <string name="city_label">City: %1$s</string>
+    <string name="country_label">Country: %1$s</string>
+    <string name="temperature_label">Temperature: %1$.1f°C</string>
+    <string name="feels_like_label">Feels Like: %1$.1f°C</string>
+    <string name="humidity_label">Humidity: %1$d%%</string>
+    <string name="wind_speed_label">Wind Speed: %1$.1f m/s</string>
+    <string name="cloudiness_label">Cloudiness: %1$d%%</string>
+    <string name="condition_label">Condition: %1$s - %2$s</string>
+    <string name="entrer_city_place_holder">Enter city…</string>
+    <string name="no_information">No information</string>
+
+</resources>

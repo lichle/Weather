@@ -13,7 +13,7 @@ internal interface WeatherDao {
     fun getWeatherFlow(id: Int): Flow<WeatherEntity>
 
     @Query("SELECT * FROM weather")
-    fun getWeatherFlow(): Flow<List<WeatherEntity>>
+    fun getWeatherListFlow(): Flow<List<WeatherEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWeather(weather: WeatherEntity): Long

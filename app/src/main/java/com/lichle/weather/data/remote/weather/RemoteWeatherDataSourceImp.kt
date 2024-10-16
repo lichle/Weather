@@ -13,9 +13,12 @@ internal class RemoteWeatherDataSourceImp @Inject constructor(
     private val apiService: ApiService,
 ) : RemoteWeatherDataSource {
 
-    @Throws(NetworkException::class)
     override suspend fun getWeatherByCity(cityName: String): WeatherDto? {
         return apiService.getWeatherByCity(cityName)
+    }
+
+    override suspend fun getWeather(id: Int): WeatherDto? {
+        return apiService.getWeather(id)
     }
 
     companion object {

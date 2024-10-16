@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlin.coroutines.cancellation.CancellationException
 
-abstract class BaseUseCase<in RequestType, out ResponseType> {
+abstract class BaseUseCase<in RequestType: Request<*>, out ResponseType> {
 
     operator fun invoke(request: RequestType): Flow<Response<ResponseType>> = flow {
         try {

@@ -6,12 +6,12 @@ import javax.inject.Inject
 internal class LocalWeatherDataSourceImp @Inject constructor(private val weatherDao: WeatherDao) :
     LocalWeatherDataSource {
 
-    override fun getWeatherStream(id: Int): Flow<WeatherEntity> {
+    override fun getWeatherFlow(id: Int): Flow<WeatherEntity> {
         return weatherDao.getWeatherFlow(id)
     }
 
-    override fun getWeathersStream(): Flow<List<WeatherEntity>> {
-        return weatherDao.getWeatherFlow()
+    override fun getWeatherListFlow(): Flow<List<WeatherEntity>> {
+        return weatherDao.getWeatherListFlow()
     }
 
     // Get a single weather record

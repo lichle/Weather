@@ -1,13 +1,15 @@
 <resources>
     <string name="app_name">Weather</string>
     <string name="weather_screen_title">Weather</string>
-    <string name="city_screen_title">City</string>
+    <string name="favorite_screen_title">City</string>
     <string name="menu_back">Back</string>
     <string name="menu_search">Search</string>
     <string name="error_message">Error: %1$s</string>
     <string name="dismiss_action">Dismiss</string>
 
     <!--Weather screen strings-->
+    <string name="add_to_favorite">Adding the city to favorite list</string>
+    <string name="add_to_favorite_success">The city is added successfully</string>
     <string name="city_label">City: %1$s</string>
     <string name="country_label">Country: %1$s</string>
     <string name="temperature_label">Temperature: %1$.1f°C</string>
@@ -16,7 +18,14 @@
     <string name="wind_speed_label">Wind Speed: %1$.1f m/s</string>
     <string name="cloudiness_label">Cloudiness: %1$d%%</string>
     <string name="condition_label">Condition: %1$s - %2$s</string>
-    <string name="entrer_city_place_holder">Enter city…</string>
-    <string name="no_information">No information</string>
+    <string name="entrer_city_place_holder">Enter city name…</string>
+    <string name="no_weather_data">No weather information to display</string>
+    <string name="can_not_retrieve_weather">Can not retrieve weather</string>
+    <string name="add_button">Add</string>
+    <string name="weather_added_to_favorite_list">Weather added to favorite list</string>
 
+    <string name="weather_detail">Weather Detail</string>
+    <string name="empty_favorite_list">You have no favorites yet</string>
+    <string name="back_button">Back</string>
+    <string name="delete_button">Delete</string>
 </resources>

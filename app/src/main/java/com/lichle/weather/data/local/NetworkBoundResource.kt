@@ -1,12 +1,12 @@
 package com.lichle.weather.data.local
 
 import com.lichle.weather.common.Logger
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import java.net.UnknownHostException
 
 abstract class NetworkBoundResource<ResultType, RequestType> {
 
@@ -14,41 +14,64 @@ abstract class NetworkBoundResource<ResultType, RequestType> {
         private val TAG = NetworkBoundResource::class.java.simpleName
     }
 
-    fun asFlow(): Flow<ResultType> = flow {
-        Logger.d(TAG, "Loading from database...")
+    fun asFlow(id: Int): Flow<ResultType> = flow {
+        try {
+            // Step 1: Fetch data from remote API
+            Logger.d(TAG, "Fetching weather with id: $id from network...")
+            val remoteData = fetchFromNetwork(id)
 
-        // Step 1: Load from the local database (continuously observe changes)
-        val localFlow = loadFromDb()
-
-        // Step 2: Determine if we need to fetch from network (once, based on the first emitted local data)
-        val localData = localFlow.firstOrNull()
-
-        if (shouldFetch(localData)) {
-            try {
-                Logger.d(TAG, "Fetching from network...")
-
-                // Step 3: Fetch data from remote API
-                val remoteData = fetchFromNetwork()
-
-                Logger.d(TAG, "Saving network result...")
-
-                // Step 4: Save remote data to local database
-                saveNetworkResult(remoteData)
-            } catch (e: Exception) {
-                // Handle exceptions, but don't wrap in Response. Let higher layers handle them.
-                Logger.e(TAG, "Error fetching from network: ${e.message}")
-                throw e // Rethrow the error and let higher layers (domain) handle it
+            // Step 2: Save the fetched data to the local database if needed
+            if (remoteData != null && shouldSave(id, remoteData)) {
+                saveWeatherToLocal(id, remoteData)
             }
-        }
 
-        // Step 5: Emit continuously updated data from local database
+            // Step 3: Always load data from the local database
+            emitLocalData(id)
+
+        } catch (e: Exception) {
+            handleFetchError(e, id)
+        }
+    }
+
+    /**
+     * Saves weather data to the local database and handles any exceptions during saving.
+     */
+    private suspend fun saveWeatherToLocal(id: Int, remoteData: RequestType) {
+        try {
+            Logger.d(TAG, "Saving weather with id: $id to local database...")
+            saveNetworkResult(remoteData)
+        } catch (e: Exception) {
+            Logger.e(TAG, "Error saving weather: id: $id to local database: ${e.message}")
+            throw e // Propagate error to be handled upstream
+        }
+    }
+
+    /**
+     * Loads and emits the local data from the database.
+     */
+    private suspend fun FlowCollector<ResultType>.emitLocalData(id: Int) {
+        Logger.d(TAG, "Loading weather with id: $id from local database...")
+        val localFlow = loadFromDb(id)
         emitAll(localFlow)
-    }.flowOn(Dispatchers.IO)
+    }
+
+    /**
+     * Handles fetch errors, falling back to local data in case of network issues.
+     */
+    private suspend fun FlowCollector<ResultType>.handleFetchError(e: Exception, id: Int) {
+        if (e is UnknownHostException) {
+            Logger.d(TAG, "Network error, falling back to local data for weather with id: $id")
+            emitLocalData(id) // Fallback to local data
+        } else {
+            throw e // If it's not a network error, rethrow the exception
+        }
+    }
 
     // Abstract methods to be implemented by subclasses
-    protected abstract suspend fun fetchFromNetwork(): RequestType
+    protected abstract suspend fun fetchFromNetwork(id: Int): RequestType?
     protected abstract suspend fun saveNetworkResult(item: RequestType)
-    protected abstract fun loadFromDb(): Flow<ResultType>
-    protected open fun shouldFetch(data: ResultType?): Boolean = true
+    protected abstract fun loadFromDb(id: Int): Flow<ResultType>
 
+    // Method to determine whether we should save the network result
+    protected open suspend fun shouldSave(id: Int, data: RequestType): Boolean = false
 }

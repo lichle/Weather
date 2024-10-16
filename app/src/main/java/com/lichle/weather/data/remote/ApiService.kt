@@ -11,14 +11,14 @@ interface ApiService {
     @GET("data/2.5/weather")
     suspend fun getWeatherByCity(
         @Query("q") cityName: String,
-        @Query("APPID") apiKey: String = "915c88010eb5ed0b04f4d91254d189ee",
+        @Query("APPID") apiKey: String,
         @Query("units") units: String = TempUnit.CELSIUS.value
     ): WeatherDto?
 
     @GET("data/2.5/weather")
     suspend fun getWeather(
         @Query("id") id: Int,
-        @Query("APPID") apiKey: String = "915c88010eb5ed0b04f4d91254d189ee",
+        @Query("APPID") apiKey: String,
         @Query("units") units: String = TempUnit.CELSIUS.value
     ): WeatherDto?
 

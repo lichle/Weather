@@ -1,6 +1,6 @@
 package com.lichle.weather.view.screen.weather
 
-import com.lichle.weather.domain.Weather
+import com.lichle.weather.domain.City
 import com.lichle.weather.domain.WeatherSummary
 
 internal data class WeatherUiModel(
@@ -73,7 +73,7 @@ internal data class WeatherSummaryUiModel(
     }
 }
 
-internal fun Weather.toUiModel(): WeatherUiModel {
+internal fun City.toUiModel(): WeatherUiModel {
     return WeatherUiModel(
         id = id,
         name = name,
@@ -111,8 +111,8 @@ internal fun WeatherSummary.toUiModel(): WeatherSummaryUiModel {
 }
 
 
-internal fun WeatherUiModel.toDomain(): Weather {
-    return Weather(
+internal fun WeatherUiModel.toDomain(): City {
+    return City(
         id = id,
         name = name,
         lon = lon,

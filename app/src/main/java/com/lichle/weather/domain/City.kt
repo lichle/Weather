@@ -1,6 +1,6 @@
 package com.lichle.weather.domain
 
-data class Weather(
+data class City(
     val id: Int,
     val name: String,
     val lon: Double,

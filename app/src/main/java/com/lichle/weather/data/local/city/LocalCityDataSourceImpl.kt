@@ -1,5 +1,6 @@
 package com.lichle.weather.data.local.city
 
+import com.lichle.weather.common.Logger
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.ext.query
@@ -40,7 +41,9 @@ internal class LocalCityDataSourceImpl @Inject constructor(
 
     override suspend fun getCity(id: Int): CityObject? {
         return withRealm { realm ->
-            realm.query(CityObject::class, "id == $0", id).first().find()
+            realm.query(CityObject::class, "id == $0", id).first().find()?.let { cityObject ->
+                realm.copyFromRealm(cityObject)  // Detach the object from the Realm
+            }
         }
     }
 

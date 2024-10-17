@@ -7,7 +7,7 @@ import com.lichle.weather.data.local.city.toDomain
 import com.lichle.weather.data.local.city.toObject
 import com.lichle.weather.data.remote.city.RemoteCityDataSource
 import com.lichle.weather.data.remote.city.WeatherDto
-import com.lichle.weather.domain.Weather
+import com.lichle.weather.domain.City
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -23,8 +23,8 @@ internal class CityRepositoryImpl @Inject constructor(
     @ApplicationScope private val _scope: CoroutineScope
 ) : CityRepository {
 
-    override fun fetchCityStream(id: Int): Flow<Weather> {
-        return object : NetworkBoundResource<Weather, WeatherDto>() {
+    override fun fetchCityStream(id: Int): Flow<City> {
+        return object : NetworkBoundResource<City, WeatherDto>() {
 
             // Fetch weather from the remote API (RemoteWeatherDataSource)
             override suspend fun fetchFromNetwork(id: Int): WeatherDto? {
@@ -37,7 +37,7 @@ internal class CityRepositoryImpl @Inject constructor(
             }
 
             // Load weather data from the local database (Room)
-            override fun loadFromDb(id: Int): Flow<Weather> {
+            override fun loadFromDb(id: Int): Flow<City> {
                 return _local.getCityFlow(id)
                     .map { it.toDomain() }  // Assuming a mapping to domain model
             }
@@ -45,23 +45,23 @@ internal class CityRepositoryImpl @Inject constructor(
         }.asFlow(id).flowOn(_dispatcher)
     }
 
-    override fun getCityListStream(): Flow<List<Weather>> {
+    override fun getCityListStream(): Flow<List<City>> {
         return _local.getCityListFlow()
             .map { entityList ->
                 entityList.map { it.toDomain() }
             }.flowOn(_dispatcher)
     }
 
-    override suspend fun fetchWeatherByCityId(city: String): Weather? = withContext(_dispatcher) {
+    override suspend fun fetchWeatherByCityId(city: String): City? = withContext(_dispatcher) {
         _remote.getWeatherByCity(city)?.toDomain()
     }
 
-    override suspend fun getCity(id: Int): Weather? = withContext(_dispatcher) {
+    override suspend fun getCity(id: Int): City? = withContext(_dispatcher) {
         _local.getCity(id)?.toDomain()
     }
 
-    override suspend fun addCity(weather: Weather) = withContext(_dispatcher) {
-        _local.addCity(weather.toObject())
+    override suspend fun addCity(city: City) = withContext(_dispatcher) {
+        _local.addCity(city.toObject())
     }
 
     override suspend fun deleteCity(id: Int) = withContext(_dispatcher) {

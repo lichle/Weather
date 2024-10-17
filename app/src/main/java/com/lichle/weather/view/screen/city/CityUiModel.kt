@@ -1,6 +1,6 @@
 package com.lichle.weather.view.screen.city
 
-import com.lichle.weather.domain.Weather
+import com.lichle.weather.domain.City
 
 data class CityUiModel(
     val id: Int,
@@ -8,7 +8,7 @@ data class CityUiModel(
     val country: String
 )
 
-fun Weather.toCityUiModel(): CityUiModel {
+fun City.toCityUiModel(): CityUiModel {
     return CityUiModel(
         id = id,
         name = name,

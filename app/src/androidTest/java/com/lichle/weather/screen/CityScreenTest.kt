@@ -10,7 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.lichle.weather.MainActivity
 import com.lichle.weather.data.FakeCityRepository
 import com.lichle.weather.data.repository.CityRepository
-import com.lichle.weather.domain.Weather
+import com.lichle.weather.domain.City
 import com.lichle.weather.domain.WeatherSummary
 import com.lichle.weather.view.screen.weather.WeatherDetailScreen
 import dagger.hilt.android.testing.BindValue
@@ -27,7 +27,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 @ExperimentalCoroutinesApi
-class WeatherScreenTest {
+class CityScreenTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -39,12 +39,12 @@ class WeatherScreenTest {
     @JvmField
     val fakeRepository: CityRepository = FakeCityRepository()
 
-    private lateinit var navController: TestNavHostController
+    private lateinit var _navController: TestNavHostController
 
     @Before
     fun setUp() {
         hiltRule.inject()
-        navController =
+        _navController =
             TestNavHostController(InstrumentationRegistry.getInstrumentation().targetContext)
     }
 
@@ -60,7 +60,7 @@ class WeatherScreenTest {
         //Show Hue weather
         val cityName = "Hue"
         composeTestRule.activity.setContent {
-            WeatherDetailScreen(navController = navController, cityName = cityName)
+            WeatherDetailScreen(navController = _navController, cityName = cityName)
         }
 
         composeTestRule.waitForIdle()
@@ -71,7 +71,7 @@ class WeatherScreenTest {
     @Test
     fun noData_DisplayEmptyContent() {
         composeTestRule.activity.setContent {
-            WeatherDetailScreen(navController = navController)
+            WeatherDetailScreen(navController = _navController)
         }
         composeTestRule.waitForIdle()
 
@@ -91,7 +91,7 @@ class WeatherScreenTest {
         //Show Hue weather
         val cityName = "Hue"
         composeTestRule.activity.setContent {
-            WeatherDetailScreen(navController = navController, cityName = cityName)
+            WeatherDetailScreen(navController = _navController, cityName = cityName)
         }
 
         composeTestRule.waitForIdle()
@@ -99,7 +99,7 @@ class WeatherScreenTest {
     }
 
 
-    private val _fakeWeather = Weather(
+    private val _fakeWeather = City(
         id = 1580240,
         name = "Hue",
         lon = 107.6,

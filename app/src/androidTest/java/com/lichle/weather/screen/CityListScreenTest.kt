@@ -12,7 +12,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.lichle.weather.MainActivity
 import com.lichle.weather.data.FakeCityRepository
 import com.lichle.weather.data.repository.CityRepository
-import com.lichle.weather.domain.Weather
+import com.lichle.weather.domain.City
 import com.lichle.weather.domain.WeatherSummary
 import com.lichle.weather.view.screen.city.FavoriteScreen
 import dagger.hilt.android.testing.BindValue
@@ -98,7 +98,7 @@ class CityListScreenTest {
         composeTestRule.onNodeWithText("FavoriteItem").assertDoesNotExist()
     }
 
-    private val _fakeHueWeather = Weather(
+    private val _fakeHueWeather = City(
         id = 1580240,
         name = "Hue",
         lon = 107.6,
@@ -131,7 +131,7 @@ class CityListScreenTest {
         timezone = 25200
     )
 
-    private val _fakeHaNoiWeather = Weather(
+    private val _fakeHaNoiWeather = City(
         id = 1581130,
         name = "Hanoi",
         lon = 107.6,

@@ -2,7 +2,7 @@ package com.lichle.weather.data.local.city
 
 import com.lichle.weather.data.remote.city.WeatherDto
 import com.lichle.weather.data.remote.city.WeatherSummaryDto
-import com.lichle.weather.domain.Weather
+import com.lichle.weather.domain.City
 import com.lichle.weather.domain.WeatherSummary
 import io.realm.kotlin.ext.realmListOf
 
@@ -50,7 +50,7 @@ internal fun WeatherSummaryDto.toObject(): WeatherSummaryObject {
 }
 
 //------------------------- Weather to WeatherObject -------------------------
-internal fun Weather.toObject(): CityObject {
+internal fun City.toObject(): CityObject {
     val weatherSummaryList = realmListOf<WeatherSummaryObject>()
     this.weather.map { it.toObject() }
     return CityObject().apply {
@@ -90,8 +90,8 @@ internal fun WeatherSummary.toObject(): WeatherSummaryObject {
 }
 
 //------------------------- WeatherObject to Weather -------------------------
-internal fun CityObject.toDomain(): Weather {
-    return Weather(
+internal fun CityObject.toDomain(): City {
+    return City(
         id = id,
         name = name,
         lon = lon,
@@ -129,8 +129,8 @@ internal fun WeatherSummaryObject.toDomain(): WeatherSummary {
 
 
 //------------------------- WeatherDto to Weather -------------------------
-fun WeatherDto.toDomain(): Weather {
-    return Weather(
+fun WeatherDto.toDomain(): City {
+    return City(
         id = id,
         name = name,
         lon = coord.lon,

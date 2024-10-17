@@ -3,16 +3,16 @@ package com.lichle.weather.domain.city
 import com.lichle.weather.data.repository.CityRepository
 import com.lichle.weather.domain.BaseUseCase
 import com.lichle.weather.domain.Request
-import com.lichle.weather.domain.Weather
+import com.lichle.weather.domain.City
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetCityUseCase @Inject constructor(
     private val _cityRepository: CityRepository
-): BaseUseCase<GetCityUseCase.GetRequest, Weather>() {
+): BaseUseCase<GetCityUseCase.GetRequest, City>() {
 
-    override suspend fun execute(request: GetRequest): Flow<Weather> = flow {
+    override suspend fun execute(request: GetRequest): Flow<City> = flow {
         val weather = _cityRepository.getCity(request.id)
         if (weather != null) {
             emit(weather)

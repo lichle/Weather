@@ -22,7 +22,7 @@
     <string name="no_weather_data">No weather information to display</string>
     <string name="can_not_retrieve_weather">Can not retrieve weather</string>
     <string name="add_button">Add</string>
-    <string name="weather_added_to_favorite_list">Weather added to favorite list</string>
+    <string name="city_added_to_favorite_list">City added to favorite list</string>
 
     <string name="weather_detail">Weather Detail</string>
     <string name="empty_favorite_list">You have no favorites yet</string>

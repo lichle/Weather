@@ -1,7 +1,7 @@
 package com.lichle.weather.data.local
 
-import com.lichle.weather.data.local.weather.WeatherObject
-import com.lichle.weather.data.local.weather.WeatherSummaryObject
+import com.lichle.weather.data.local.city.CityObject
+import com.lichle.weather.data.local.city.WeatherSummaryObject
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +19,7 @@ internal object DatabaseModule {
     fun provideRealmConfiguration(): RealmConfiguration {
         return RealmConfiguration.Builder(
             schema = setOf(
-                WeatherObject::class,
+                CityObject::class,
                 WeatherSummaryObject::class
             )
         ).compactOnLaunch()

@@ -1,15 +1,15 @@
 package com.lichle.weather.data
 
-import com.lichle.weather.data.remote.weather.Clouds
-import com.lichle.weather.data.remote.weather.Coord
-import com.lichle.weather.data.remote.weather.Main
-import com.lichle.weather.data.remote.weather.RemoteWeatherDataSource
-import com.lichle.weather.data.remote.weather.Sys
-import com.lichle.weather.data.remote.weather.WeatherDto
-import com.lichle.weather.data.remote.weather.WeatherSummaryDto
-import com.lichle.weather.data.remote.weather.Wind
+import com.lichle.weather.data.remote.city.Clouds
+import com.lichle.weather.data.remote.city.Coord
+import com.lichle.weather.data.remote.city.Main
+import com.lichle.weather.data.remote.city.RemoteCityDataSource
+import com.lichle.weather.data.remote.city.Sys
+import com.lichle.weather.data.remote.city.WeatherDto
+import com.lichle.weather.data.remote.city.WeatherSummaryDto
+import com.lichle.weather.data.remote.city.Wind
 
-class FakeNetworkDataSource : RemoteWeatherDataSource {
+class FakeNetworkDataSource : RemoteCityDataSource {
 
     override suspend fun getWeatherByCity(cityName: String): WeatherDto? {
         return _fakeWeatherDto

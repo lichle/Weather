@@ -1,16 +1,9 @@
 package com.lichle.weather.di
 
-import com.lichle.weather.data.FakeWeatherRepository
 import com.lichle.weather.data.local.RepositoryModule
-import com.lichle.weather.domain.weather.AddWeatherUseCase
-import com.lichle.weather.domain.weather.FetchWeatherUseCase
-import com.lichle.weather.domain.weather.GetWeatherUseCase
-import com.lichle.weather.domain.weather.SearchWeatherUseCase
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
-import javax.inject.Singleton
 
 @Module
 @TestInstallIn(

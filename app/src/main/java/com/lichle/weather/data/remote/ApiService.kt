@@ -1,8 +1,7 @@
 package com.lichle.weather.data.remote
 
 import com.lichle.weather.common.TempUnit
-import com.lichle.weather.data.remote.weather.WeatherDto
-import retrofit2.Response
+import com.lichle.weather.data.remote.city.WeatherDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 

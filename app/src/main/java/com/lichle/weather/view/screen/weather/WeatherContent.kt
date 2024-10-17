@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.lichle.weather.R
 
 @Composable
-fun WeatherDetails(weather: WeatherUiModel, modifier: Modifier = Modifier) {
+internal fun WeatherDetails(weather: WeatherUiModel, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .testTag("WeatherDetails")

@@ -37,6 +37,7 @@ core = "1.6.1"
 coreKtxVersion = "1.6.1"
 rules = "1.6.1"
 libraryBase = "3.0.0"
+realmAndroidKotlinExtensions = "10.19.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -87,6 +88,7 @@ androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
 androidx-rules = { group = "androidx.test", name = "rules", version.ref = "rules" }
 library-base = { group = "io.realm.kotlin", name = "library-base", version.ref = "libraryBase" }
+realm-android-kotlin-extensions = { group = "io.realm", name = "realm-android-kotlin-extensions", version.ref = "realmAndroidKotlinExtensions" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -77,6 +77,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended.android)
     implementation(libs.library.base)
+    implementation(libs.realm.android.kotlin.extensions)
 //    implementation(libs.androidx.hilt.lifecycle.viewmodel)
 //    implementation(libs.core.ktx)
     ksp(libs.androidx.hilt.compiler)

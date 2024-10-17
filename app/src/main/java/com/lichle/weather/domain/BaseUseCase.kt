@@ -21,6 +21,7 @@ abstract class BaseUseCase<in RequestType: Request<*>, out ResponseType> {
             throw e // Propagate cancellation exceptions
         } catch (e: Exception) {
             // Handle errors and emit error state
+            handleError(e)
             val (errorCode, errorMessage) = mapException(e)
             Logger.e(TAG, "Error in use case: ${e.message}")
             emit(Response.Error(errorCode, errorMessage))

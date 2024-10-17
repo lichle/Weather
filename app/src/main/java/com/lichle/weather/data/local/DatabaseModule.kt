@@ -26,9 +26,4 @@ internal object DatabaseModule {
             .build()
     }
 
-    @Provides
-    fun provideRealm(realmConfig: RealmConfiguration): Realm {
-        return Realm.open(realmConfig) // Provide a new instance per injection
-    }
-
 }

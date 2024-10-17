@@ -12,14 +12,14 @@ import com.lichle.weather.data.remote.weather.Wind
 class FakeNetworkDataSource : RemoteWeatherDataSource {
 
     override suspend fun getWeatherByCity(cityName: String): WeatherDto? {
-        return fakeWeatherDto
+        return _fakeWeatherDto
     }
 
     override suspend fun getWeather(id: Int): WeatherDto? {
-        return fakeWeatherDto
+        return _fakeWeatherDto
     }
 
-    private val fakeWeatherDto = WeatherDto(
+    private val _fakeWeatherDto = WeatherDto(
         coord = Coord(105.8412, 21.0245),
         weather = listOf(
             WeatherSummaryDto(

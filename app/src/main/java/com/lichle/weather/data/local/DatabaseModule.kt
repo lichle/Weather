@@ -1,11 +1,13 @@
 package com.lichle.weather.data.local
 
-import android.content.Context
-import com.lichle.weather.data.local.weather.WeatherDao
+import com.lichle.weather.data.local.weather.WeatherObject
+import com.lichle.weather.data.local.weather.WeatherSummaryObject
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.realm.kotlin.Realm
+import io.realm.kotlin.RealmConfiguration
 import javax.inject.Singleton
 
 @Module
@@ -14,13 +16,19 @@ internal object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(context: Context): AppDatabase {
-        return AppDatabase.getInstance(context)
+    fun provideRealmConfiguration(): RealmConfiguration {
+        return RealmConfiguration.Builder(
+            schema = setOf(
+                WeatherObject::class,
+                WeatherSummaryObject::class
+            )
+        ).compactOnLaunch()
+            .build()
     }
 
     @Provides
-    fun provideWeatherDao(database: AppDatabase): WeatherDao {
-        return database.weatherDao()
+    fun provideRealm(realmConfig: RealmConfiguration): Realm {
+        return Realm.open(realmConfig) // Provide a new instance per injection
     }
 
 }

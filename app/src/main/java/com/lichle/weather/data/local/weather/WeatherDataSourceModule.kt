@@ -14,8 +14,8 @@ internal abstract class WeatherDataSourceModule {
 
     @Binds
     @Singleton
-    abstract fun bindLocalWeatherDataSource(
-        dataSource: LocalWeatherDataSourceImp
+    abstract fun bindRealmLocalWeatherDataSource(
+        dataSource: LocalWeatherDataSourceImpl
     ): LocalWeatherDataSource
 
     @Binds

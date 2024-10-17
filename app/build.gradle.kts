@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.realm.kotlin)
     id("dagger.hilt.android.plugin")
 }
 
@@ -75,6 +76,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended.android)
+    implementation(libs.library.base)
 //    implementation(libs.androidx.hilt.lifecycle.viewmodel)
 //    implementation(libs.core.ktx)
     ksp(libs.androidx.hilt.compiler)
@@ -129,15 +131,9 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.kotlinx.coroutines.test)
 
-    // Room dependencies
-    implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
-
-    // Optional - Room Kotlin extensions and coroutines support
-    implementation(libs.androidx.room.ktx)
-
     implementation(libs.gson)
     ksp(libs.hilt.compiler)
+
 }
 
 kapt {

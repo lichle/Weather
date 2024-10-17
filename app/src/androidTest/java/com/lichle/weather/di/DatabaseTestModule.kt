@@ -1,14 +1,14 @@
 package com.lichle.weather.di
 
-import android.content.Context
-import androidx.room.Room
-import com.lichle.weather.data.local.AppDatabase
 import com.lichle.weather.data.local.DatabaseModule
+import com.lichle.weather.data.local.weather.WeatherObject
+import com.lichle.weather.data.local.weather.WeatherSummaryObject
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
+import io.realm.kotlin.Realm
+import io.realm.kotlin.RealmConfiguration
 import javax.inject.Singleton
 
 @Module
@@ -18,12 +18,17 @@ import javax.inject.Singleton
 )
 object DatabaseTestModule {
 
-    @Singleton
     @Provides
-    fun provideDataBase(@ApplicationContext context: Context): AppDatabase {
-        return Room
-            .inMemoryDatabaseBuilder(context.applicationContext, AppDatabase::class.java)
-            .allowMainThreadQueries()
+    @Singleton
+    fun provideRealm(): Realm {
+        val config = RealmConfiguration.Builder(
+            schema = setOf(
+                WeatherObject::class,
+                WeatherSummaryObject::class
+            )
+        ).compactOnLaunch()
             .build()
+        return Realm.open(config)
     }
+
 }

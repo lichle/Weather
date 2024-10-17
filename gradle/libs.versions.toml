@@ -36,6 +36,7 @@ runner = "1.6.2"
 core = "1.6.1"
 coreKtxVersion = "1.6.1"
 rules = "1.6.1"
+libraryBase = "3.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -85,6 +86,7 @@ androidx-runner = { group = "androidx.test", name = "runner", version.ref = "run
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
 androidx-rules = { group = "androidx.test", name = "rules", version.ref = "rules" }
+library-base = { group = "io.realm.kotlin", name = "library-base", version.ref = "libraryBase" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -94,3 +96,4 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp"}
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid"}
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+realm-kotlin = {id = "io.realm.kotlin", version.ref = "libraryBase"}

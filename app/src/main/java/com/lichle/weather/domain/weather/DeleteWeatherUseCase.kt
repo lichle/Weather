@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class DeleteWeatherUseCase @Inject constructor(
-    private val weatherRepository: WeatherRepository
-): BaseUseCase<DeleteWeatherUseCase.DeleteRequest, Int>() {
+    private val _weatherRepository: WeatherRepository
+): BaseUseCase<DeleteWeatherUseCase.DeleteRequest, Unit>() {
 
-    override suspend fun execute(request: DeleteRequest): Flow<Int> = flow {
-        emit(weatherRepository.deleteWeather(request.id))
+    override suspend fun execute(request: DeleteRequest): Flow<Unit> = flow {
+        emit(_weatherRepository.deleteWeather(request.id))
     }
 
     class DeleteRequest(val id: Int): Request<Int>(data = id)

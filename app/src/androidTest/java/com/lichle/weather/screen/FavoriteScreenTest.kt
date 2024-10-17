@@ -2,7 +2,6 @@ package com.lichle.weather.screen
 
 import androidx.activity.compose.setContent
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -42,12 +41,12 @@ class FavoriteScreenTest {
     @JvmField
     val fakeRepository: WeatherRepository = FakeWeatherRepository()
 
-    private lateinit var navController: TestNavHostController
+    private lateinit var _navController: TestNavHostController
 
     @Before
     fun setUp() {
         hiltRule.inject()
-        navController = TestNavHostController(InstrumentationRegistry.getInstrumentation().targetContext)
+        _navController = TestNavHostController(InstrumentationRegistry.getInstrumentation().targetContext)
     }
 
     @Test
@@ -64,7 +63,7 @@ class FavoriteScreenTest {
         assert(addedHaNoiWeather != null) { "Failed to add weather to repository" }
 
         composeTestRule.activity.setContent {
-            FavoriteScreen(navController = navController)
+            FavoriteScreen(navController = _navController)
         }
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("FavoriteList").assertExists()
@@ -74,7 +73,7 @@ class FavoriteScreenTest {
     @Test
     fun noData_DisplayEmptyContent() {
         composeTestRule.activity.setContent {
-            FavoriteScreen(navController = navController)
+            FavoriteScreen(navController = _navController)
         }
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("FavoriteList").assertDoesNotExist()
@@ -90,7 +89,7 @@ class FavoriteScreenTest {
         assert(addedHueWeather != null) { "Failed to add weather to repository" }
         composeTestRule.activity.setContent {
             FavoriteScreen(
-                navController = navController,
+                navController = _navController,
             )
         }
 
@@ -115,7 +114,7 @@ class FavoriteScreenTest {
         visibility = 10000,
         windSpeed = 1.54,
         windDeg = 190,
-        windGust = null,  // No wind gust data provided
+        windGust = 15.0,  // No wind gust data provided
         cloudiness = 40,
         weather = listOf(
             WeatherSummary(
@@ -148,7 +147,7 @@ class FavoriteScreenTest {
         visibility = 10000,
         windSpeed = 1.54,
         windDeg = 190,
-        windGust = null,  // No wind gust data provided
+        windGust = 15.0,  // No wind gust data provided
         cloudiness = 40,
         weather = listOf(
             WeatherSummary(

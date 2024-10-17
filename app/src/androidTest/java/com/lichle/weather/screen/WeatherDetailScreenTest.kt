@@ -115,7 +115,7 @@ class WeatherDetailScreenTest {
         visibility = 10000,
         windSpeed = 1.54,
         windDeg = 190,
-        windGust = null,  // No wind gust data provided
+        windGust = 15.0,  // No wind gust data provided
         cloudiness = 40,
         weather = listOf(
             WeatherSummary(

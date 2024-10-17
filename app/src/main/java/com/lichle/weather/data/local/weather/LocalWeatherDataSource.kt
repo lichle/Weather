@@ -4,10 +4,10 @@ import kotlinx.coroutines.flow.Flow
 
 internal interface LocalWeatherDataSource {
 
-    fun getWeatherFlow(id: Int): Flow<WeatherEntity>
-    fun getWeatherListFlow(): Flow<List<WeatherEntity>>
-    suspend fun getWeather(id: Int): WeatherEntity?
-    suspend fun addWeather(weather: WeatherEntity): Long
-    suspend fun deleteWeather(id: Int): Int
+    fun getWeatherFlow(id: Int): Flow<WeatherObject>
+    fun getWeatherListFlow(): Flow<List<WeatherObject>>
+    suspend fun getWeather(id: Int): WeatherObject?
+    suspend fun addWeather(weather: WeatherObject)
+    suspend fun deleteWeather(id: Int)
 
 }

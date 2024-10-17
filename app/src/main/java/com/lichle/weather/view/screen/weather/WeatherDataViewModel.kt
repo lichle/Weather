@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.lichle.core_common.ErrorCodes
 import com.lichle.weather.common.Logger
 import com.lichle.weather.domain.Response
-import com.lichle.weather.domain.Weather
 import com.lichle.weather.domain.weather.AddWeatherUseCase
 import com.lichle.weather.domain.weather.FetchWeatherUseCase
 import com.lichle.weather.domain.weather.GetWeatherUseCase
@@ -38,10 +37,10 @@ sealed class WeatherIntent {
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    private val searchWeatherUseCase: SearchWeatherUseCase,
-    private val addWeatherUseCase: AddWeatherUseCase,
-    private val getWeatherUseCase: GetWeatherUseCase,
-    private val fetchWeatherUseCase: FetchWeatherUseCase
+    private val _searchWeatherUseCase: SearchWeatherUseCase,
+    private val _addWeatherUseCase: AddWeatherUseCase,
+    private val _getWeatherUseCase: GetWeatherUseCase,
+    private val _fetchWeatherUseCase: FetchWeatherUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<WeatherState>(WeatherState.Empty())
@@ -76,7 +75,7 @@ class WeatherViewModel @Inject constructor(
     private suspend fun searchWeatherByCity(cityName: String) {
         Logger.d(TAG, "Search weather by city: $cityName")
         val request = SearchWeatherUseCase.SearchRequest(cityName)
-        searchWeatherUseCase(request).collect { response ->
+        _searchWeatherUseCase(request).collect { response ->
             when (response) {
                 is Response.Loading -> _state.value = WeatherState.Loading
                 is Response.Success -> {
@@ -108,7 +107,7 @@ class WeatherViewModel @Inject constructor(
     ) {
         val request = GetWeatherUseCase.GetRequest(weather.id)
         var weatherState = WeatherState.FetchWeatherDataSuccess(weather, false)
-        getWeatherUseCase(request).collect { response ->
+        _getWeatherUseCase(request).collect { response ->
             if (response is Response.Success) {
                 weatherState = WeatherState.FetchWeatherDataSuccess(weather, true)
             }
@@ -123,7 +122,7 @@ class WeatherViewModel @Inject constructor(
     private suspend fun fetchWeather(id: Int) {
         Logger.d(TAG, "Fetch weather by id: $id")
         val request = FetchWeatherUseCase.FetchRequest(id)
-        fetchWeatherUseCase(request).collect { response ->
+        _fetchWeatherUseCase(request).collect { response ->
             _state.value = when (response) {
                 is Response.Loading -> WeatherState.Loading
                 is Response.Success -> {
@@ -145,17 +144,20 @@ class WeatherViewModel @Inject constructor(
             _currentWeather?.let { weather ->
                 val currentWeather = weather.deepCopy()
                 val request = AddWeatherUseCase.AddRequest(currentWeather.toDomain())
-                addWeatherUseCase(request).collect { response ->
+                _addWeatherUseCase(request).collect { response ->
                     when (response) {
                         is Response.Success -> {
-                            if (response.data > 0) {
-                                _currentWeather?.let {
-                                    _state.value = WeatherState.AddToFavoritesSuccess(it)
-                                }
-                            } else {
-                                _state.value = WeatherState.Empty(
-                                    ErrorInfo(ErrorCodes.DB_UNKNOWN_ERROR, "Weather data not saved")
-                                )
+//                            if (response.data > 0) {
+//                                _currentWeather?.let {
+//                                    _state.value = WeatherState.AddToFavoritesSuccess(it)
+//                                }
+//                            } else {
+//                                _state.value = WeatherState.Empty(
+//                                    ErrorInfo(ErrorCodes.DB_UNKNOWN_ERROR, "Weather data not saved")
+//                                )
+//                            }
+                            _currentWeather?.let {
+                                _state.value = WeatherState.AddToFavoritesSuccess(it)
                             }
                         }
 

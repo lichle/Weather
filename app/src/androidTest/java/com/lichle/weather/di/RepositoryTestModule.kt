@@ -2,7 +2,6 @@ package com.lichle.weather.di
 
 import com.lichle.weather.data.FakeWeatherRepository
 import com.lichle.weather.data.local.RepositoryModule
-import com.lichle.weather.data.repository.WeatherRepository
 import com.lichle.weather.domain.weather.AddWeatherUseCase
 import com.lichle.weather.domain.weather.FetchWeatherUseCase
 import com.lichle.weather.domain.weather.GetWeatherUseCase

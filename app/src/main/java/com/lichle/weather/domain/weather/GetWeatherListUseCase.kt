@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetWeatherListUseCase @Inject constructor(
-    private val weatherRepository: WeatherRepository
+    private val _weatherRepository: WeatherRepository
 ) : BaseUseCase<NoRequest, List<Weather>>() {
 
     override suspend fun execute(request: NoRequest): Flow<List<Weather>> {
         // Call the repository method that returns a Flow of Weather list
         Logger.d(TAG, "GetWeatherListUseCase execute")
-        return weatherRepository.getWeatherListStream()
+        return _weatherRepository.getWeatherListStream()
     }
 
     companion object {

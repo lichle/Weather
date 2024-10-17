@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetWeatherUseCase @Inject constructor(
-    private val weatherRepository: WeatherRepository
+    private val _weatherRepository: WeatherRepository
 ): BaseUseCase<GetWeatherUseCase.GetRequest, Weather>() {
 
     override suspend fun execute(request: GetRequest): Flow<Weather> = flow {
-        val weather = weatherRepository.getWeather(request.id)
+        val weather = _weatherRepository.getWeather(request.id)
         if (weather != null) {
             emit(weather)
         } else {

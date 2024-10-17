@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class AddWeatherUseCase @Inject constructor(
-    private val weatherRepository: WeatherRepository
-): BaseUseCase<AddWeatherUseCase.AddRequest, Long>() {
+    private val _weatherRepository: WeatherRepository
+): BaseUseCase<AddWeatherUseCase.AddRequest, Unit>() {
 
-    override suspend fun execute(request: AddRequest): Flow<Long> = flow {
-        emit(weatherRepository.addWeather(request.weather))
+    override suspend fun execute(request: AddRequest): Flow<Unit> = flow {
+        emit(_weatherRepository.addWeather(request.weather))
     }
 
     class AddRequest(val weather: Weather): Request<Weather>(data = (weather))

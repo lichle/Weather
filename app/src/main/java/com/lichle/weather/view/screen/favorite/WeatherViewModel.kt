@@ -6,7 +6,6 @@ import com.lichle.weather.common.Logger
 import com.lichle.weather.domain.NoRequest
 import com.lichle.weather.domain.Response
 import com.lichle.weather.domain.weather.DeleteWeatherUseCase
-import com.lichle.weather.domain.weather.FetchWeatherUseCase
 import com.lichle.weather.domain.weather.GetWeatherListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,8 +30,8 @@ sealed class FavoriteIntent {
 
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val getWeatherListUseCase: GetWeatherListUseCase,
-    private val deleteWeatherUseCase: DeleteWeatherUseCase
+    private val _getWeatherListUseCase: GetWeatherListUseCase,
+    private val _deleteWeatherUseCase: DeleteWeatherUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<FavoriteState>(FavoriteState.Loading)
@@ -50,7 +49,7 @@ class FavoriteViewModel @Inject constructor(
     private fun fetchFavoriteList() {
         viewModelScope.launch {
             _state.value = FavoriteState.Loading
-            getWeatherListUseCase(NoRequest)
+            _getWeatherListUseCase(NoRequest)
                 .map { response ->
                     when (response) {
                         is Response.Loading -> FavoriteState.Loading
@@ -67,7 +66,7 @@ class FavoriteViewModel @Inject constructor(
     private fun deleteWeatherById(cityId: Int) {
         viewModelScope.launch {
             Logger.d(TAG, "deleteWeatherById, id: $cityId")
-            deleteWeatherUseCase(DeleteWeatherUseCase.DeleteRequest(cityId))
+            _deleteWeatherUseCase(DeleteWeatherUseCase.DeleteRequest(cityId))
                 .collect { response ->
                     when (response) {
                         is Response.Loading -> {} // Optionally handle loading state

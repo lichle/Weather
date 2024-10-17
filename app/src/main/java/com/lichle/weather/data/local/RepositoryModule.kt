@@ -1,7 +1,7 @@
 package com.lichle.weather.data.local
 
-import com.lichle.weather.data.local.weather.WeatherRepositoryImp
 import com.lichle.weather.data.repository.WeatherRepository
+import com.lichle.weather.data.repository.WeatherRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,8 +14,8 @@ internal abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindWeatherRepository(
-        weatherRepositoryImpl: WeatherRepositoryImp
+    abstract fun bindRealmWeatherRepository(
+        realmWeatherRepositoryImpl: WeatherRepositoryImpl
     ): WeatherRepository
 
 }

@@ -1,6 +1,6 @@
 package com.lichle.weather.data.remote
 
-object NativeLib {
+internal object NativeLib {
     init {
         System.loadLibrary("native-lib") // Load the native library
     }

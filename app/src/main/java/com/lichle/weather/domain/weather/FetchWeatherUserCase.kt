@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class FetchWeatherUseCase @Inject constructor(
-    private val weatherRepository: WeatherRepository
+    private val _weatherRepository: WeatherRepository
 ) : BaseUseCase<FetchWeatherUseCase.FetchRequest, Weather>() {
 
     override suspend fun execute(request: FetchRequest): Flow<Weather> {
-        return weatherRepository.fetchWeatherStream(request.id)
+        return _weatherRepository.fetchWeatherStream(request.id)
     }
 
     class FetchRequest(val id: Int) : Request<Int>(data = (id))

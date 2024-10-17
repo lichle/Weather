@@ -9,7 +9,7 @@ interface WeatherRepository {
     fun getWeatherListStream(): Flow<List<Weather>>
     suspend fun fetchWeatherByCity(city: String): Weather?
     suspend fun getWeather(id: Int): Weather?
-    suspend fun addWeather(weather: Weather): Long
-    suspend fun deleteWeather(id: Int): Int
+    suspend fun addWeather(weather: Weather)
+    suspend fun deleteWeather(id: Int)
 
 }

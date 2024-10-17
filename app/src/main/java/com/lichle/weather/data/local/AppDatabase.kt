@@ -9,7 +9,7 @@ import com.lichle.weather.data.local.weather.WeatherEntity
 
 // Add the list of entity classes and set the database version
 @Database(entities = [WeatherEntity::class], version = 1, exportSchema = false)
-internal abstract class AppDatabase : RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
 
     abstract fun weatherDao(): WeatherDao
 

@@ -6,14 +6,6 @@ import com.lichle.weather.view.navigation.DestinationsArgs.CITY_ID_ARG
 import com.lichle.weather.view.navigation.DestinationsArgs.CITY_NAME_ARG
 
 /**
- * Screens used in [Destinations]
- */
-private object Screens {
-    const val WEATHER_SCREEN = "weather"
-    const val FAVORITE_SCREEN = "favorite"
-}
-
-/**
  * Arguments used in [Destinations] routes
  */
 object DestinationsArgs {
@@ -29,7 +21,6 @@ object Destinations {
     const val FAVORITE_ROUTE = "favorite"
     const val WEATHER_ROUTE_BY_NAME = "weatherByName/{$CITY_NAME_ARG}"
     const val WEATHER_ROUTE_BY_ID = "weatherById/{$CITY_ID_ARG}"
-//    const val WEATHER_ROUTE = "weather"
 }
 
 /**

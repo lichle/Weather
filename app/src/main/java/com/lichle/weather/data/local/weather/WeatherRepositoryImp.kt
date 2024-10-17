@@ -14,7 +14,9 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 internal class WeatherRepositoryImp @Inject constructor(
     private val local: LocalWeatherDataSource,
     private val remote: RemoteWeatherDataSource,

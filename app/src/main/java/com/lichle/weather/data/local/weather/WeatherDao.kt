@@ -7,7 +7,7 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-internal interface WeatherDao {
+interface WeatherDao {
 
     @Query("SELECT * FROM weather WHERE id = :id LIMIT 1")
     fun getWeatherFlow(id: Int): Flow<WeatherEntity>

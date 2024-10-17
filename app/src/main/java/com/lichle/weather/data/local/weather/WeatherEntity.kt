@@ -9,7 +9,7 @@ import com.google.gson.reflect.TypeToken
 
 @Entity(tableName = "weather")
 @TypeConverters(WeatherSummaryConverters::class)
-internal data class WeatherEntity(
+data class WeatherEntity(
     @PrimaryKey val id: Int,
     val name: String,
     val lon: Double,
@@ -35,7 +35,7 @@ internal data class WeatherEntity(
     val timezone: Int
 )
 
-internal data class WeatherSummaryEntity(
+data class WeatherSummaryEntity(
     val id: Int,
     val main: String,
     val description: String,

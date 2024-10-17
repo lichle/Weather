@@ -30,6 +30,7 @@ import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import com.lichle.weather.view.ui_common.EmptyContent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,7 +126,7 @@ fun FavoriteList(
     onItemClick: (CityUiModel) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().testTag("FavoriteList"),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(16.dp)
     ) {
@@ -171,6 +172,7 @@ fun FavoriteItem(
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(
+                    modifier = Modifier.testTag("BtnDelete"),
                     imageVector = Icons.Default.Delete,
                     contentDescription = stringResource(id = R.string.delete_button),
                     tint = MaterialTheme.colorScheme.onError
@@ -178,9 +180,9 @@ fun FavoriteItem(
             }
         },
         dismissContent = {
-            ElevatedCard( // M3 elevated card for each city item
+            ElevatedCard(
                 onClick = { onItemClick(city) },
-                modifier = Modifier.padding(4.dp),
+                modifier = Modifier.padding(4.dp).testTag("FavoriteItem"),
                 colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Row(

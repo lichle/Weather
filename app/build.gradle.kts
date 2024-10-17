@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hilt)
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -19,10 +20,11 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
+        testInstrumentationRunner = "com.lichle.weather.CustomTestRunner"
         ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64"))
         }
@@ -73,15 +75,26 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended.android)
+//    implementation(libs.androidx.hilt.lifecycle.viewmodel)
+//    implementation(libs.core.ktx)
+    ksp(libs.androidx.hilt.compiler)
+    androidTestImplementation(libs.androidx.navigation.testing)
+    androidTestImplementation(libs.mockito.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+    testImplementation(libs.hilt.android.testing)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.material3)
+
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.androidx.core)
+    androidTestImplementation(libs.androidx.rules)
 
     // ViewModel library
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -92,6 +105,8 @@ dependencies {
     // If you're using Hilt for ViewModel injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+    kspTest(libs.hilt.android.compiler)
+    kspAndroidTest(libs.hilt.android.compiler)
 
     //Navigation
     implementation(libs.androidx.navigation.compose)
@@ -111,6 +126,9 @@ dependencies {
     // OkHttp logging interceptor (optional, useful for debugging)
     implementation(libs.logging.interceptor)
 
+    testImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+
     // Room dependencies
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
@@ -119,5 +137,9 @@ dependencies {
     implementation(libs.androidx.room.ktx)
 
     implementation(libs.gson)
+    ksp(libs.hilt.compiler)
+}
 
+kapt {
+    correctErrorTypes = true
 }

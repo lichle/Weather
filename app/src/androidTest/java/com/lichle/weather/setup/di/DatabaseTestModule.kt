@@ -1,4 +1,4 @@
-package com.lichle.weather.di
+package com.lichle.weather.setup.di
 
 import com.lichle.weather.data.local.DatabaseModule
 import com.lichle.weather.data.local.city.CityObject

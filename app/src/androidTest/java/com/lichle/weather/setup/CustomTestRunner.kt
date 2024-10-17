@@ -1,4 +1,4 @@
-package com.lichle.weather
+package com.lichle.weather.setup
 
 import android.app.Application
 import android.content.Context

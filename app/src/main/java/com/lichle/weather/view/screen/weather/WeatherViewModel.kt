@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lichle.core_common.ErrorCodes
 import com.lichle.weather.common.Logger
+import com.lichle.weather.domain.BaseUseCase
+import com.lichle.weather.domain.City
 import com.lichle.weather.domain.Response
 import com.lichle.weather.domain.city.AddCityUseCase
 import com.lichle.weather.domain.city.FetchCityUserCase
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 internal sealed class WeatherState {
     data object Loading : WeatherState()
@@ -37,10 +40,10 @@ sealed class WeatherIntent {
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    private val _searchCityUseCase: SearchCityUseCase,
-    private val _addCityUseCase: AddCityUseCase,
-    private val _getCityUseCase: GetCityUseCase,
-    private val _fetchCityUseCase: FetchCityUserCase
+    @Named("SearchCityUseCase") private val _searchCityUseCase: BaseUseCase<SearchCityUseCase.SearchRequest, City?>,
+    @Named("AddCityUseCase") private val _addCityUseCase: BaseUseCase<AddCityUseCase.AddRequest, Unit>,
+    @Named("GetCityUseCase") private val _getCityUseCase: BaseUseCase<GetCityUseCase.GetRequest, City>,
+    @Named("FetchCityUserCase") private val _fetchCityUseCase: BaseUseCase<FetchCityUserCase.FetchRequest, City>
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<WeatherState>(WeatherState.Empty())

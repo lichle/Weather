@@ -11,8 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.lichle.weather.view.screen.city.FavoriteScreen
-import com.lichle.weather.view.screen.weather.WeatherDetailScreen
+import com.lichle.weather.view.screen.city.CityListScreen
+import com.lichle.weather.view.screen.weather.WeatherScreen
 
 @Composable
 fun AppNavGraph(
@@ -34,7 +34,7 @@ fun AppNavGraph(
             composable(
                 route = Destinations.FAVORITE_ROUTE,
             ) {
-                FavoriteScreen(navController = navController)
+                CityListScreen(navController = navController)
             }
 
             composable(
@@ -48,7 +48,7 @@ fun AppNavGraph(
                 )
             ) { backStackEntry ->
                 val cityName = backStackEntry.arguments?.getString(DestinationsArgs.CITY_NAME_ARG)
-                WeatherDetailScreen(navController = navController, cityName = cityName)
+                WeatherScreen(navController = navController, cityName = cityName)
             }
 
             composable(
@@ -60,7 +60,7 @@ fun AppNavGraph(
                 )
             ) { backStackEntry ->
                 val cityId = backStackEntry.arguments?.getInt(DestinationsArgs.CITY_ID_ARG)
-                WeatherDetailScreen(navController = navController, cityId = cityId ?: 0)
+                WeatherScreen(navController = navController, cityId = cityId ?: 0)
             }
         }
     }

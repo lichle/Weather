@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class GetCityListUseCase @Inject constructor(
     private val _cityRepository: CityRepository
-) : BaseUseCase<NoRequest, List<City>>() {
+) : BaseUseCase<NoRequest, List<City>> {
 
     override suspend fun execute(request: NoRequest): Flow<List<City>> {
         // Call the repository method that returns a Flow of Weather list

@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class DeleteCityUseCase @Inject constructor(
     private val _cityRepository: CityRepository
-): BaseUseCase<DeleteCityUseCase.DeleteRequest, Unit>() {
+): BaseUseCase<DeleteCityUseCase.DeleteRequest, Unit> {
 
     override suspend fun execute(request: DeleteRequest): Flow<Unit> = flow {
         emit(_cityRepository.deleteCity(request.id))

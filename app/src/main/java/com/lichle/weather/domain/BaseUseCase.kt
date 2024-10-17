@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlin.coroutines.cancellation.CancellationException
 
-abstract class BaseUseCase<in RequestType: Request<*>, out ResponseType> {
+interface BaseUseCase<RequestType: Request<*>, ResponseType> {
 
     operator fun invoke(request: RequestType): Flow<Response<ResponseType>> = flow {
         try {
@@ -29,10 +29,10 @@ abstract class BaseUseCase<in RequestType: Request<*>, out ResponseType> {
     }
 
     // Abstract function to be implemented by each use case
-    protected abstract suspend fun execute(request: RequestType): Flow<ResponseType>
+    suspend fun execute(request: RequestType): Flow<ResponseType>
 
     // Optional method to handle errors
-    protected open fun handleError(e: Throwable) {
+    fun handleError(e: Throwable) {
         Logger.e(TAG, "Error in use case: ${e.message}")
     }
 

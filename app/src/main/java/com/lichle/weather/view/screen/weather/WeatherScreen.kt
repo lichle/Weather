@@ -33,7 +33,7 @@ import com.lichle.weather.view.ui_common.EmptyContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WeatherDetailScreen(
+fun WeatherScreen(
     navController: NavHostController,
     cityName: String? = null,
     cityId: Int = 0,

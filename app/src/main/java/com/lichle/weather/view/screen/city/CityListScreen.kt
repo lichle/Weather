@@ -35,16 +35,16 @@ import com.lichle.weather.view.ui_common.EmptyContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoriteScreen(
+fun CityListScreen(
     navController: NavHostController,
-    viewModel: FavoriteViewModel = hiltViewModel()
+    viewModel: CityListViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(Unit) {
-        viewModel.processIntent(FavoriteIntent.LoadFavorites)
+        viewModel.processIntent(CityListIntent.LoadFavorites)
     }
 
     Scaffold(
@@ -53,7 +53,7 @@ fun FavoriteScreen(
                 onSearchClick = { cityName ->
                     focusManager.clearFocus()
                     keyboardController?.hide()
-                    viewModel.processIntent(FavoriteIntent.SearchCity(cityName))
+                    viewModel.processIntent(CityListIntent.SearchCity(cityName))
                     navController.navigate("weatherByName/$cityName") {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
@@ -72,7 +72,7 @@ fun FavoriteScreen(
                 color = MaterialTheme.colorScheme.background
             ) {
                 when (state) {
-                    is FavoriteState.Loading -> {
+                    is CityListState.Loading -> {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier.fillMaxSize()
@@ -82,17 +82,17 @@ fun FavoriteScreen(
                             )
                         }
                     }
-                    is FavoriteState.Success -> {
-                        val cities = (state as FavoriteState.Success).cities
+                    is CityListState.Success -> {
+                        val cities = (state as CityListState.Success).cities
                         if (cities.isNotEmpty()) {
                             FavoriteList(
                                 cities = cities,
                                 onDelete = { city ->
-                                    viewModel.processIntent(FavoriteIntent.DeleteCity(city.id))
+                                    viewModel.processIntent(CityListIntent.DeleteCity(city.id))
                                 },
                                 onItemClick = { city ->
                                     viewModel.processIntent(
-                                        FavoriteIntent.NavigateToWeatherDetail(city.id)
+                                        CityListIntent.NavigateToWeatherDetail(city.id)
                                     )
                                     navController.navigate("weatherById/${city.id}")
                                 }
@@ -101,13 +101,13 @@ fun FavoriteScreen(
                             EmptyContent(stringResource(id = R.string.empty_favorite_list))
                         }
                     }
-                    is FavoriteState.Error -> {
+                    is CityListState.Error -> {
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = (state as FavoriteState.Error).message,
+                                text = (state as CityListState.Error).message,
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.error
                             )

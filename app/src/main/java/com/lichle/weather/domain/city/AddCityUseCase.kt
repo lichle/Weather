@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class AddCityUseCase @Inject constructor(
     private val _cityRepository: CityRepository
-): BaseUseCase<AddCityUseCase.AddRequest, Unit>() {
+): BaseUseCase<AddCityUseCase.AddRequest, Unit> {
 
     override suspend fun execute(request: AddRequest): Flow<Unit> = flow {
         emit(_cityRepository.addCity(request.weather))

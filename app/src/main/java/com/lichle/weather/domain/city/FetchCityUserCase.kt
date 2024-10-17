@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class FetchCityUserCase @Inject constructor(
     private val _cityRepository: CityRepository
-) : BaseUseCase<FetchCityUserCase.FetchRequest, City>() {
+) : BaseUseCase<FetchCityUserCase.FetchRequest, City> {
 
     override suspend fun execute(request: FetchRequest): Flow<City> {
         return _cityRepository.fetchCityStream(request.id)

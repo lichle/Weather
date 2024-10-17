@@ -1,4 +1,4 @@
-package com.lichle.weather
+package com.lichle.weather.setup
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

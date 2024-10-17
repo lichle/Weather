@@ -1,4 +1,4 @@
-package com.lichle.weather.data
+package com.lichle.weather.setup.data
 
 import com.lichle.weather.data.repository.CityRepository
 import com.lichle.weather.domain.City

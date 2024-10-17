@@ -3,7 +3,7 @@ package com.lichle.weather.view.screen.weather
 import com.lichle.weather.domain.City
 import com.lichle.weather.domain.WeatherSummary
 
-internal data class WeatherUiModel(
+data class WeatherUiModel(
     val id: Int,
     val name: String,
     val lon: Double,
@@ -57,7 +57,7 @@ internal data class WeatherUiModel(
     }
 }
 
-internal data class WeatherSummaryUiModel(
+data class WeatherSummaryUiModel(
     val id: Int,
     val main: String,
     val description: String,

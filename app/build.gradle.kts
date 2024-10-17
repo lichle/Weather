@@ -25,7 +25,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        testInstrumentationRunner = "com.lichle.weather.CustomTestRunner"
+        testInstrumentationRunner = "com.lichle.weather.setup.CustomTestRunner"
         ndk {
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64"))
         }
@@ -45,11 +45,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
@@ -78,6 +78,8 @@ dependencies {
     implementation(libs.androidx.material.icons.extended.android)
     implementation(libs.library.base)
     implementation(libs.realm.android.kotlin.extensions)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.truth)
 //    implementation(libs.androidx.hilt.lifecycle.viewmodel)
 //    implementation(libs.core.ktx)
     ksp(libs.androidx.hilt.compiler)

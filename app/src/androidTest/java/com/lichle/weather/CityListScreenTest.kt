@@ -1,6 +1,5 @@
-package com.lichle.weather.screen
+package com.lichle.weather
 
-import androidx.activity.compose.setContent
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -9,12 +8,11 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
-import com.lichle.weather.MainActivity
-import com.lichle.weather.data.FakeCityRepository
+import com.lichle.weather.setup.data.FakeCityRepository
 import com.lichle.weather.data.repository.CityRepository
 import com.lichle.weather.domain.City
 import com.lichle.weather.domain.WeatherSummary
-import com.lichle.weather.view.screen.city.FavoriteScreen
+import com.lichle.weather.view.screen.city.CityListScreen
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -35,7 +33,7 @@ class CityListScreenTest {
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
 
     @BindValue
     @JvmField
@@ -62,8 +60,8 @@ class CityListScreenTest {
         val addedHaNoiWeather = fakeRepository.getCity(_fakeHaNoiWeather.id)
         assert(addedHaNoiWeather != null) { "Failed to add weather to repository" }
 
-        composeTestRule.activity.setContent {
-            FavoriteScreen(navController = _navController)
+        composeTestRule.setContent {
+            CityListScreen(navController = _navController)
         }
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("FavoriteList").assertExists()
@@ -72,8 +70,8 @@ class CityListScreenTest {
 
     @Test
     fun noData_DisplayEmptyContent() {
-        composeTestRule.activity.setContent {
-            FavoriteScreen(navController = _navController)
+        composeTestRule.setContent {
+            CityListScreen(navController = _navController)
         }
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("FavoriteList").assertDoesNotExist()
@@ -87,8 +85,8 @@ class CityListScreenTest {
         // Verify that the weather was added
         val addedHueWeather = fakeRepository.getCity(_fakeHueWeather.id)
         assert(addedHueWeather != null) { "Failed to add weather to repository" }
-        composeTestRule.activity.setContent {
-            FavoriteScreen(
+        composeTestRule.setContent {
+            CityListScreen(
                 navController = _navController,
             )
         }

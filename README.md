@@ -1,4 +1,4 @@
-You can built the source code or install download the apk here and install on a device to run this app
+You can built the source code or download the apk here and install it on a device to run this app
 
 
 ## Architecture: MVI

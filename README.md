@@ -2,9 +2,9 @@ You can built the source code or install download the apk here and install on a 
 
 
 ## Architecture: MVI
- - Model: represents the state of the application
+- Model: represents the state of the application
 - View: the UI component that renders the Model and displays it to the user
-_ Intent: The Intent is a user action or event that triggers a state change in the ViewModel
+- Intent: The Intent is a user action or event that triggers a state change in the ViewModel
 
 ## Project structure:
 

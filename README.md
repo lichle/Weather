@@ -2,10 +2,13 @@ You can built the source code or download the apk here and install it on a devic
 
 com.lichle.weather.data
 
-## Architecture: MVI
-- Model: represents the state of the application
-- View: the UI component that renders the Model and displays it to the user
-- Intent: The Intent is a user action or event that triggers a state change in the ViewModel
+## Architecture:
+- MVI
+	- Model: represents the state of the application
+	- View: the UI component that renders the Model and displays it to the user
+	- Intent: The Intent is a user action or event that triggers a state change in the ViewModel
+- Clean architecture: the dependency is: View -> ViewModel -> UseCase -> Repository -> Database
+
 
 ## Project structure:
 - Data layer: 

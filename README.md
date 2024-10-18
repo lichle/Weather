@@ -1,6 +1,9 @@
-You can built the source code or download the apk here and install it on a device to run this app
+## How to Run
+1. Clone the project down to your computer.
+2. Open it in Android Studio (Android Studio Koala or newer are recommended)
+3. To build debug version you just need to click on the play button on Android Studio.
+4. Or just play with this [**apk**](https://github.com/lichle/Weather/blob/main/docs/app-debug.apk)
 
-com.lichle.weather.data
 
 ## Architecture:
 - MVI
@@ -19,6 +22,7 @@ com.lichle.weather.data
 - Presentation layer: deals with the user interface and user interaction
 	- navigation: manages the flow between different screens or components of the app
 	- screen: contains UI components and the logic associated with the visual representation of the app
+
 
 ## Task list:
 - User Interface: Jetpack Compose, Material Design ✔

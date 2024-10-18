@@ -2,7 +2,7 @@
 1. Clone the project down to your computer.
 2. Open it in Android Studio (Android Studio Koala or newer are recommended)
 3. To build debug version you just need to click on the play button on Android Studio.
-4. Or just play with this [**apk**](https://github.com/lichle/Weather/blob/main/docs/app-debug.apk)
+4. Or just play with this [**apk**](https://github.com/lichle/Weather/blob/main/docs)
 
 
 ## Architecture:

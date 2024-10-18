@@ -5,7 +5,7 @@
 4. Or just play with this [**apk**](https://github.com/lichle/Weather/blob/main/docs)
 
 
-## Architecture:
+## Architecture
 - MVI
 	- Model: represents the state of the application
 	- View: the UI component that renders the Model and displays it to the user
@@ -13,7 +13,7 @@
 - Clean architecture: the dependency is: View -> ViewModel -> UseCase -> Repository -> Database
 
 
-## Project structure:
+## Project structure
 - Data layer: 
 	- local: manages data stored on the device
 	- remote: handles network operations and API interactions
@@ -24,7 +24,7 @@
 	- screen: contains UI components and the logic associated with the visual representation of the app
 
 
-## Task list:
+## Task list
 - User Interface: Jetpack Compose, Material Design ✔
 - Database: Realm ✔
 - Network: Retrofit ✔

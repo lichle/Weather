@@ -47,7 +47,7 @@ class WeatherScreenTest {
     }
 
     @Test
-    fun hasData_DisplayWeatherDetail() = runTest {
+    fun `show weather when has data`() = runTest {
         // Add the fake weather data
         fakeRepository.addCity(_fakeWeather)
 
@@ -67,7 +67,7 @@ class WeatherScreenTest {
     }
 
     @Test
-    fun noData_DisplayEmptyContent() {
+    fun `show empty content when no data`() {
         composeTestRule.setContent {
             WeatherScreen(navController = _navController)
         }
@@ -78,7 +78,7 @@ class WeatherScreenTest {
     }
 
     @Test
-    fun isFavorite_NotDisplayAddButton() = runTest {
+    fun `hide add button when item is already in favorites`() = runTest {
         // Add the fake weather data
         fakeRepository.addCity(_fakeWeather)
 

@@ -61,7 +61,7 @@ class WeatherViewModelTest {
     @Test
     fun `search weather by city name success`() = runTest {
         // Given a successful response from search use case
-        val city = getMockCity()
+        val city = getMockCity(1, "Hue")
         whenever(_searchCityUseCase(any())).thenReturn(
             flow { emit(Response.Success(city)) }
         )
@@ -83,7 +83,7 @@ class WeatherViewModelTest {
     @Test
     fun `search weather by city id success`() = runTest {
         // Given a successful response from fetch use case
-        val city = getMockCity()
+        val city = getMockCity(1, "Hue")
         whenever(_fetchCityUseCase(any())).thenReturn(
             flow { emit(Response.Success(city)) }
         )
@@ -101,7 +101,7 @@ class WeatherViewModelTest {
     @Test
     fun `add city to favorites success`() = runTest {
         // Given a successful search and add response
-        val city = getMockCity()
+        val city = getMockCity(1, "Hue")
         whenever(_searchCityUseCase(any())).thenReturn(
             flow { emit(Response.Success(city)) }
         )

@@ -3,10 +3,10 @@ package com.lichle.weather.setup.data
 import com.lichle.weather.domain.City
 import com.lichle.weather.domain.WeatherSummary
 
-fun getMockCity(): City {
+fun getMockCity(id: Int, name: String): City {
     return City(
-        id = 1580240,
-        name = "Hue",
+        id = id,
+        name = name,
         lon = 107.6,
         lat = 16.4667,
         temperature = 26.06,

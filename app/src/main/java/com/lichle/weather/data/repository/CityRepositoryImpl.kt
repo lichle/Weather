@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -20,7 +21,6 @@ internal class CityRepositoryImpl @Inject constructor(
     private val _local: LocalCityDataSource,
     private val _remote: RemoteCityDataSource,
     @IoDispatcher private val _dispatcher: CoroutineDispatcher,
-    @ApplicationScope private val _scope: CoroutineScope
 ) : CityRepository {
 
     override fun fetchCityStream(id: Int): Flow<City> {

@@ -19,22 +19,36 @@ internal class LocalCityDataSourceImpl @Inject constructor(
 
     override fun getCityFlow(id: Int): Flow<CityObject> {
         return flow {
-            withRealm { realm ->  // Suspends here within the flow builder
-                val cityFlow = realm.query(CityObject::class, "id == $0", id)
+            val realm = Realm.open(_realmConfig)
+            try {
+                val cityFlow = realm.query<CityObject>("id == $0", id)
                     .asFlow()
                     .mapNotNull { it.list.firstOrNull() }
+                    .map { city ->
+                        // Create a detached copy of the city object
+                        realm.copyFromRealm(city)
+                    }
                 emitAll(cityFlow)
+            } finally {
+                // Close realm when flow collection is cancelled
+                realm.close()
             }
         }
     }
 
     override fun getCityListFlow(): Flow<List<CityObject>> {
         return flow {
-            withRealm { realm ->  // Call suspend function within flow builder
-                val cityListFlow = realm.query(CityObject::class)
+            val realm = Realm.open(_realmConfig)
+            try {
+                val cityListFlow = realm.query<CityObject>()
                     .asFlow()
-                    .map { it.list }
+                    .map { results ->
+                        // Create detached copies of all cities
+                        results.list.map { city -> realm.copyFromRealm(city) }
+                    }
                 emitAll(cityListFlow)
+            } finally {
+                realm.close()
             }
         }
     }

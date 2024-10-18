@@ -48,7 +48,7 @@ class CityListScreenTest {
     }
 
     @Test
-    fun hasData_DisplayList() = runTest {
+    fun `show list when has data`() = runTest {
         // Add the fake weather data
         fakeRepository.addCity(_fakeHueWeather)
         fakeRepository.addCity(_fakeHaNoiWeather)
@@ -69,7 +69,7 @@ class CityListScreenTest {
     }
 
     @Test
-    fun noData_DisplayEmptyContent() {
+    fun `show empty content when no data`() {
         composeTestRule.setContent {
             CityListScreen(navController = _navController)
         }
@@ -79,7 +79,7 @@ class CityListScreenTest {
     }
 
     @Test
-    fun deleteButton_RemovesFavoriteItem() = runTest {
+    fun `remove city when click delete button`() = runTest {
         // Set up the UI with the FavoriteScreen and a city in the list
         fakeRepository.addCity(_fakeHueWeather)
         // Verify that the weather was added

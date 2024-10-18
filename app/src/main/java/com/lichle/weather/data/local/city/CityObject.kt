@@ -1,11 +1,13 @@
 package com.lichle.weather.data.local.city
 
+import androidx.annotation.VisibleForTesting
 import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 
-internal class CityObject : RealmObject {
+@VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+class CityObject : RealmObject {
     @PrimaryKey
     var id: Int = 0
     var name: String = ""
@@ -32,7 +34,8 @@ internal class CityObject : RealmObject {
     var timezone: Int = 0
 }
 
-internal class WeatherSummaryObject : RealmObject {
+@VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+class WeatherSummaryObject : RealmObject {
     var id: Int = 0
     var main: String = ""
     var description: String = ""

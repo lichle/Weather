@@ -140,79 +140,43 @@ fun FavoriteList(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteItem(
     city: CityUiModel,
     onDelete: (CityUiModel) -> Unit,
     onItemClick: (CityUiModel) -> Unit
 ) {
-    val dismissState = rememberDismissState(
-        confirmStateChange = {
-            if (it == DismissValue.DismissedToEnd || it == DismissValue.DismissedToStart) {
-                onDelete(city)
-            }
-            true
-        }
-    )
-
-    SwipeToDismiss(
-        state = dismissState,
-        directions = setOf(DismissDirection.EndToStart),
-        background = {
-            val color = when (dismissState.dismissDirection) {
-                DismissDirection.EndToStart -> MaterialTheme.colorScheme.error
-                else -> Color.Transparent
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color)
-                    .padding(horizontal = 16.dp),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                Icon(
-                    modifier = Modifier.testTag("BtnDelete"),
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = stringResource(id = R.string.delete_button),
-                    tint = MaterialTheme.colorScheme.onError
+    ElevatedCard(
+        onClick = { onItemClick(city) },
+        modifier = Modifier.padding(4.dp).testTag("FavoriteItem"),
+        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = city.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = city.country,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-        },
-        dismissContent = {
-            ElevatedCard(
-                onClick = { onItemClick(city) },
-                modifier = Modifier.padding(4.dp).testTag("FavoriteItem"),
-                colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = city.name,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = city.country,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    IconButton(onClick = { onDelete(city) }) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = stringResource(id = R.string.delete_button),
-                            tint = MaterialTheme.colorScheme.error
-                        )
-                    }
-                }
+            IconButton(onClick = { onDelete(city) }) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = stringResource(id = R.string.delete_button),
+                    tint = MaterialTheme.colorScheme.error
+                )
             }
         }
-    )
+    }
 }

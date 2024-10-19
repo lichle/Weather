@@ -1,17 +1,11 @@
 package com.lichle.weather.view.screen.city
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.DismissDirection
-import androidx.compose.material.DismissValue
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.material3.Icon
@@ -21,117 +15,117 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import com.lichle.weather.R
 
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lichle.weather.view.ui_common.EmptyContent
+import com.lichle.weather.view.ui_common.asString
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CityListScreen(
-    navController: NavHostController,
+    onItemClick: ((CityUiModel) -> Unit)? = null,
+    onSearchClick: ((String) -> Unit)? = null,
     viewModel: CityListViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
+    // Handle one-time events
     LaunchedEffect(Unit) {
-        viewModel.processIntent(CityListIntent.LoadFavorites)
+        viewModel.events.collect { event ->
+            when (event) {
+                is CityListUiEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message.asString(context))
+                }
+
+                is CityListUiEvent.NavigateToWeather -> {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                    onSearchClick?.invoke(event.cityName)
+                }
+            }
+        }
     }
 
     Scaffold(
         topBar = {
             FavoriteTopAppBar(
                 onSearchClick = { cityName ->
-                    focusManager.clearFocus()
-                    keyboardController?.hide()
-                    viewModel.processIntent(CityListIntent.SearchCity(cityName))
-                    navController.navigate("weatherByName/$cityName") {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                    viewModel.processIntent(CityListIntent.SearchCityWeather(cityName))
                 }
             )
         },
-        content = { innerPadding ->
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                when (state) {
-                    is CityListState.Loading -> {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            CircularProgressIndicator(
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-                    is CityListState.Success -> {
-                        val cities = (state as CityListState.Success).cities
-                        if (cities.isNotEmpty()) {
-                            FavoriteList(
-                                cities = cities,
-                                onDelete = { city ->
-                                    viewModel.processIntent(CityListIntent.DeleteCity(city.id))
-                                },
-                                onItemClick = { city ->
-                                    viewModel.processIntent(
-                                        CityListIntent.NavigateToWeatherDetail(city.id)
-                                    )
-                                    navController.navigate("weatherById/${city.id}")
-                                }
-                            )
-                        } else {
-                            EmptyContent(stringResource(id = R.string.empty_favorite_list))
-                        }
-                    }
-                    is CityListState.Error -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = (state as CityListState.Error).message,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.error
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    )
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
+        CityListContent(
+            uiState = uiState,
+            onItemClick = onItemClick,
+            onDeleteCity = { city ->
+                viewModel.processIntent(CityListIntent.DeleteCity(city.id))
+            },
+            modifier = Modifier.padding(paddingValues)
+        )
+    }
 }
 
 @Composable
-fun FavoriteList(
+private fun CityListContent(
+    uiState: CityListUiState,
+    onItemClick: ((CityUiModel) -> Unit)?,
+    onDeleteCity: (CityUiModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        when {
+            uiState.isLoading -> LoadingContent()
+            uiState.cities.isNotEmpty() -> CityList(
+                cities = uiState.cities,
+                onDelete = onDeleteCity,
+                onItemClick = { city -> onItemClick?.invoke(city) }
+            )
+
+            else -> EmptyContent(stringResource(id = R.string.empty_favorite_list))
+        }
+    }
+}
+
+@Composable
+private fun LoadingContent() {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+    }
+}
+
+@Composable
+fun CityList(
     cities: List<CityUiModel>,
     onDelete: (CityUiModel) -> Unit,
     onItemClick: (CityUiModel) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize().testTag("FavoriteList"),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("CityList"),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(16.dp)
     ) {
         items(cities) { city ->
-            FavoriteItem(
+            CityItem(
                 city = city,
                 onDelete = onDelete,
                 onItemClick = onItemClick
@@ -141,14 +135,16 @@ fun FavoriteList(
 }
 
 @Composable
-fun FavoriteItem(
+fun CityItem(
     city: CityUiModel,
     onDelete: (CityUiModel) -> Unit,
     onItemClick: (CityUiModel) -> Unit
 ) {
     ElevatedCard(
         onClick = { onItemClick(city) },
-        modifier = Modifier.padding(4.dp).testTag("FavoriteItem"),
+        modifier = Modifier
+            .padding(4.dp)
+            .testTag("CityItem"),
         colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Row(
@@ -170,7 +166,7 @@ fun FavoriteItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            IconButton(onClick = { onDelete(city) }) {
+            IconButton(modifier = Modifier.testTag("BtnDelete"), onClick = { onDelete(city) }) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = stringResource(id = R.string.delete_button),

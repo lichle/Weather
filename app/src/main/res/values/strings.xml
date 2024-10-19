@@ -28,4 +28,6 @@
     <string name="empty_favorite_list">You have no favorites yet</string>
     <string name="back_button">Back</string>
     <string name="delete_button">Delete</string>
+    <string name="error_city_name_blank">City name cannot be blank</string>
+    <string name="error_delete_city">Failed to delete city: %1$s</string>
 </resources>

@@ -27,11 +27,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.lichle.weather.R
 import com.lichle.weather.view.ui_common.EmptyContent
+import com.lichle.weather.view.ui_common.asString
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherScreen(
     navController: NavHostController,
@@ -39,78 +40,85 @@ fun WeatherScreen(
     cityId: Int = 0,
     viewModel: WeatherViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
+
+    // Handle one-time events
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is WeatherUiEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message.asString(context))
+                }
+
+                WeatherUiEvent.NavigateBack -> {
+                    navController.navigateUp()
+                }
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.processIntent(WeatherIntent.SearchWeather(cityName, cityId))
     }
 
-    Scaffold(topBar = {
-        WeatherDetailTopAppBar(navController = navController)
-    }, floatingActionButton = {
-        if (state is WeatherState.FetchWeatherDataSuccess) {
-            val isFavorite = (state as WeatherState.FetchWeatherDataSuccess).isFavorite
-            if (!isFavorite) {
-                FloatingActionButton(modifier = Modifier.testTag("btnAdd"), onClick = { viewModel.processIntent(WeatherIntent.AddWeather) }) {
+    Scaffold(
+        topBar = {
+            WeatherDetailTopAppBar(navController = navController)
+        },
+        floatingActionButton = {
+            if (uiState.weather != null && !uiState.isFavorite) {
+                FloatingActionButton(
+                    modifier = Modifier.testTag("btnAdd"),
+                    onClick = { viewModel.processIntent(WeatherIntent.AddToFavorites) }
+                ) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = stringResource(id = R.string.add_button)
                     )
                 }
             }
-        }
-    }, snackbarHost = { SnackbarHost(snackbarHostState) }) { innerPadding ->
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            when (state) {
-                is WeatherState.Empty -> {
-                    EmptyContent(
-                        stringResource(id = R.string.no_weather_data)
-                    )
-                    (state as? WeatherState.Empty)?.error?.let { error ->
-                        LaunchedEffect(error) {
-                            snackbarHostState.showSnackbar(
-                                message = context.getString(R.string.error_message, error.message),
-                                actionLabel = context.getString(R.string.dismiss_action),
-                                duration = SnackbarDuration.Indefinite
-                            ).let { result ->
-                                if (result == SnackbarResult.Dismissed) {
-                                    viewModel.processIntent(WeatherIntent.DismissError)
-                                }
-                            }
-                        }
-                    }
-                }
-
-                is WeatherState.Loading -> {
+            when {
+                uiState.isLoading -> {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .size(48.dp)
-                            .align(Alignment.Center), strokeWidth = 4.dp
+                            .align(Alignment.Center),
+                        strokeWidth = 4.dp
                     )
                 }
 
-                is WeatherState.FetchWeatherDataSuccess -> {
-                    val weather = (state as WeatherState.FetchWeatherDataSuccess).weather
-                    WeatherDetails(weather)
+                uiState.weather != null -> {
+                    WeatherDetails(uiState.weather!!)
                 }
 
-                is WeatherState.AddToFavoritesSuccess -> {
-                    val weather = (state as WeatherState.AddToFavoritesSuccess).weather
-                    WeatherDetails(weather)
-                    LaunchedEffect(Unit) {
-                        snackbarHostState.showSnackbar(
-                            message = context.getString(R.string.city_added_to_favorite_list),
-                            duration = SnackbarDuration.Short
-                        )
+                else -> {
+                    EmptyContent(stringResource(id = R.string.no_weather_data))
+                }
+            }
+
+            // Show error if present
+            uiState.error?.let { error ->
+                LaunchedEffect(error) {
+                    snackbarHostState.showSnackbar(
+                        message = context.getString(R.string.error_message, error.message),
+                        actionLabel = context.getString(R.string.dismiss_action),
+                        duration = SnackbarDuration.Indefinite
+                    ).let { result ->
+                        if (result == SnackbarResult.Dismissed) {
+                            viewModel.processIntent(WeatherIntent.DismissError)
+                        }
                     }
                 }
-
             }
         }
     }

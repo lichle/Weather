@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.realm.kotlin)
     id("dagger.hilt.android.plugin")
+    id("kotlin-parcelize")
 }
 
 android {

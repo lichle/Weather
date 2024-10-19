@@ -1,8 +1,10 @@
 package com.lichle.weather.view.screen.weather
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lichle.core_common.ErrorCodes
+import com.lichle.weather.R
 import com.lichle.weather.common.Logger
 import com.lichle.weather.domain.BaseUseCase
 import com.lichle.weather.domain.City
@@ -11,6 +13,8 @@ import com.lichle.weather.domain.city.AddCityUseCase
 import com.lichle.weather.domain.city.FetchCityUserCase
 import com.lichle.weather.domain.city.GetCityUseCase
 import com.lichle.weather.domain.city.SearchCityUseCase
+import com.lichle.weather.view.ui_common.EventHandler
+import com.lichle.weather.view.ui_common.StringResource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,111 +24,152 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
-internal sealed class WeatherState {
-    data object Loading : WeatherState()
-    data class FetchWeatherDataSuccess(
-        val weather: WeatherUiModel,
-        val isFavorite: Boolean
-    ) : WeatherState()
-
-    data class AddToFavoritesSuccess(val weather: WeatherUiModel) : WeatherState()
-    data class Empty(val error: ErrorInfo? = null) : WeatherState()
-}
+data class WeatherUiState(
+    val weather: WeatherUiModel? = null,
+    val isFavorite: Boolean = false,
+    val isLoading: Boolean = false,
+    val error: ErrorInfo? = null
+)
 
 data class ErrorInfo(val code: Int, val message: String)
 
 sealed class WeatherIntent {
     data class SearchWeather(val cityName: String? = null, val cityId: Int = 0) : WeatherIntent()
-    data object AddWeather : WeatherIntent()
+    data object AddToFavorites : WeatherIntent()
     data object DismissError : WeatherIntent()
+}
+
+sealed class WeatherUiEvent {
+    data class ShowSnackbar(val message: StringResource) : WeatherUiEvent()
+    data object NavigateBack : WeatherUiEvent()
 }
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     @Named("SearchCityUseCase") private val _searchCityUseCase: BaseUseCase<SearchCityUseCase.SearchRequest, City?>,
     @Named("AddCityUseCase") private val _addCityUseCase: BaseUseCase<AddCityUseCase.AddRequest, Unit>,
     @Named("GetCityUseCase") private val _getCityUseCase: BaseUseCase<GetCityUseCase.GetRequest, City>,
     @Named("FetchCityUserCase") private val _fetchCityUseCase: BaseUseCase<FetchCityUserCase.FetchRequest, City>
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<WeatherState>(WeatherState.Empty())
-    internal val state: StateFlow<WeatherState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(WeatherUiState())
+    val state: StateFlow<WeatherUiState> = _state.asStateFlow()
 
-    private var _currentWeather: WeatherUiModel? = null
+    private val _eventHandler = EventHandler<WeatherUiEvent>()
+    val events = _eventHandler.events
 
     fun processIntent(intent: WeatherIntent) {
-        Logger.d(TAG, "Processing intent: $intent")
         when (intent) {
-            is WeatherIntent.SearchWeather -> searchWeatherByCityOrId(
-                intent.cityName, intent.cityId
-            )
+            is WeatherIntent.SearchWeather -> {
+                if (_state.value.weather == null) {
+                    searchWeatherByCityOrId(intent.cityName, intent.cityId)
+                }
+            }
 
-            is WeatherIntent.AddWeather -> addCity()
+            is WeatherIntent.AddToFavorites -> addToFavorites()
             is WeatherIntent.DismissError -> dismissError()
         }
     }
 
     private fun searchWeatherByCityOrId(cityName: String?, cityId: Int) {
-        Logger.d(TAG, "Search weather by cityName: $cityName, cityId: $cityId")
+        if (cityName == null && cityId == 0) {
+            val savedWeather = savedStateHandle.get<WeatherUiModel>(SAVED_WEATHER_KEY)
+            if (savedWeather != null) {
+                _state.value = WeatherUiState(weather = savedWeather, isFavorite = true)
+            }
+            return
+        }
+
         viewModelScope.launch {
-            _state.value = WeatherState.Loading
+            _state.value = _state.value.copy(isLoading = true)
             when {
                 !cityName.isNullOrBlank() -> searchWeatherByCity(cityName)
                 cityId != 0 -> fetchWeather(cityId)
-                else -> _state.value = WeatherState.Empty()
+                else -> _state.value = _state.value.copy(
+                    isLoading = false,
+                    error = ErrorInfo(ErrorCodes.NOT_FOUND, "No search criteria provided")
+                )
             }
         }
     }
 
     private suspend fun searchWeatherByCity(cityName: String) {
-        Logger.d(TAG, "Search weather by city: $cityName")
         viewModelScope.launch {
             val request = SearchCityUseCase.SearchRequest(cityName)
             _searchCityUseCase(request).collect { response ->
                 when (response) {
-                    is Response.Loading -> _state.value = WeatherState.Loading
+                    is Response.Loading -> _state.value = _state.value.copy(isLoading = true)
                     is Response.Success -> {
                         response.data?.let { weatherDto ->
                             val weather = weatherDto.toUiModel()
-                            _currentWeather = weather
-                            buildWeatherDataState(weather) {
-                                _state.value =
-                                    WeatherState.FetchWeatherDataSuccess(it.weather, it.isFavorite)
-                            }
-                        } ?: WeatherState.Empty(
-                            ErrorInfo(
-                                ErrorCodes.NOT_FOUND, "Weather data not found"
+                            savedStateHandle[SAVED_WEATHER_KEY] = weather
+                            checkFavoriteStatus(weather)
+                        } ?: run {
+                            _state.value = _state.value.copy(
+                                isLoading = false,
+                                error = ErrorInfo(ErrorCodes.NOT_FOUND, "Weather data not found")
+                            )
+                        }
+                    }
+
+                    is Response.Error -> {
+                        _state.value = _state.value.copy(
+                            isLoading = false,
+                            error = ErrorInfo(response.code, response.message)
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun checkFavoriteStatus(weather: WeatherUiModel) {
+        viewModelScope.launch {
+            val request = GetCityUseCase.GetRequest(weather.id)
+            _getCityUseCase(request).collect { response ->
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    weather = weather,
+                    isFavorite = response is Response.Success,
+                    error = null
+                )
+            }
+        }
+    }
+
+    private fun addToFavorites() {
+        viewModelScope.launch {
+            val currentWeather = _state.value.weather ?: return@launch
+            val request = AddCityUseCase.AddRequest(currentWeather.toDomain())
+
+            _addCityUseCase(request).collect { response ->
+                when (response) {
+                    is Response.Success -> {
+                        _state.value = _state.value.copy(isFavorite = true)
+                        _eventHandler.emitEvent(
+                            WeatherUiEvent.ShowSnackbar(
+                                StringResource.Resource(R.string.city_added_to_favorite_list)
                             )
                         )
                     }
 
                     is Response.Error -> {
-                        Logger.d("WeatherViewModel", "Error occurred: ${response.message}")
-                        _state.value = WeatherState.Empty(ErrorInfo(response.code, response.message))
+                        _eventHandler.emitEvent(
+                            WeatherUiEvent.ShowSnackbar(
+                                StringResource.Plain(response.message)
+                            )
+                        )
                     }
-                }
-            }
-        }
-    }
 
-    private suspend fun buildWeatherDataState(
-        weather: WeatherUiModel,
-        onResult: (WeatherState.FetchWeatherDataSuccess) -> Unit
-    ) {
-        viewModelScope.launch {
-            val request = GetCityUseCase.GetRequest(weather.id)
-            var weatherState = WeatherState.FetchWeatherDataSuccess(weather, false)
-            _getCityUseCase(request).collect { response ->
-                if (response is Response.Success) {
-                    weatherState = WeatherState.FetchWeatherDataSuccess(weather, true)
+                    is Response.Loading -> {}
                 }
             }
-            onResult(weatherState)
         }
     }
 
     private fun dismissError() {
-        Logger.d(TAG, "Use dismissed on error")
+        _state.value = _state.value.copy(error = null)
     }
 
     private suspend fun fetchWeather(id: Int) {
@@ -132,55 +177,32 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch {
             val request = FetchCityUserCase.FetchRequest(id)
             _fetchCityUseCase(request).collect { response ->
-                _state.value = when (response) {
-                    is Response.Loading -> WeatherState.Loading
+                when (response) {
+                    is Response.Loading -> _state.value = _state.value.copy(isLoading = true)
                     is Response.Success -> {
                         val weather = response.data.toUiModel()
-                        _currentWeather = weather
-                        WeatherState.FetchWeatherDataSuccess(weather, true)
+                        _state.value = _state.value.copy(
+                            isLoading = false,
+                            weather = weather,
+                            isFavorite = true,
+                            error = null
+                        )
                     }
 
                     is Response.Error -> {
-                        WeatherState.Empty(ErrorInfo(response.code, response.message))
+                        _eventHandler.emitEvent(
+                            WeatherUiEvent.ShowSnackbar(
+                                StringResource.Plain(response.message)
+                            )
+                        )
                     }
                 }
-            }
-        }
-    }
-
-    private fun addCity() {
-        Logger.d(TAG, "Add city to favorites")
-        viewModelScope.launch {
-            _currentWeather?.let { weather ->
-                val currentWeather = weather.deepCopy()
-                val request = AddCityUseCase.AddRequest(currentWeather.toDomain())
-                _addCityUseCase(request).collect { response ->
-                    when (response) {
-                        is Response.Success -> {
-                            _currentWeather?.let {
-                                _state.value = WeatherState.AddToFavoritesSuccess(it)
-                            }
-                        }
-
-                        is Response.Error -> {
-                            _state.value =
-                                WeatherState.Empty(ErrorInfo(response.code, response.message))
-                        }
-
-                        else -> {}
-                    }
-                }
-            } ?: run {
-                _state.value = WeatherState.Empty(
-                    ErrorInfo(ErrorCodes.DB_UNKNOWN_ERROR, "No weather data to add")
-                )
-                return@launch
             }
         }
     }
 
     companion object {
         private const val TAG = "WeatherViewModel"
+        private const val SAVED_WEATHER_KEY = "saved_weather"
     }
-
 }

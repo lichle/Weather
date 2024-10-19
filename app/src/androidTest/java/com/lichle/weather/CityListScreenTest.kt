@@ -61,20 +61,20 @@ class CityListScreenTest {
         assert(addedHaNoiWeather != null) { "Failed to add weather to repository" }
 
         composeTestRule.setContent {
-            CityListScreen(navController = _navController)
+            CityListScreen()
         }
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithTag("FavoriteList").assertExists()
+        composeTestRule.onNodeWithTag("CityList").assertExists()
         composeTestRule.onNodeWithTag("EmptyContent").assertDoesNotExist()
     }
 
     @Test
     fun `show empty content when no data`() {
         composeTestRule.setContent {
-            CityListScreen(navController = _navController)
+            CityListScreen()
         }
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithTag("FavoriteList").assertDoesNotExist()
+        composeTestRule.onNodeWithTag("CityList").assertDoesNotExist()
         composeTestRule.onNodeWithTag("EmptyContent").assertExists()
     }
 
@@ -86,14 +86,12 @@ class CityListScreenTest {
         val addedHueWeather = fakeRepository.getCity(_fakeHueWeather.id)
         assert(addedHueWeather != null) { "Failed to add weather to repository" }
         composeTestRule.setContent {
-            CityListScreen(
-                navController = _navController,
-            )
+            CityListScreen()
         }
 
         composeTestRule.onNodeWithTag("BtnDelete").performClick()
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText("FavoriteItem").assertDoesNotExist()
+        composeTestRule.onNodeWithText("CityItem").assertDoesNotExist()
     }
 
     private val _fakeHueWeather = City(

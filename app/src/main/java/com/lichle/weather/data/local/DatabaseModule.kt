@@ -23,6 +23,7 @@ internal object DatabaseModule {
                 WeatherSummaryObject::class
             )
         ).compactOnLaunch()
+            .name("weather.db")
             .build()
     }
 

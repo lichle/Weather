@@ -28,24 +28,11 @@ object Destinations {
  */
 class NavigationActions(private val navController: NavHostController) {
 
-    fun navigateToWeather(cityName: String) {
-        navController.navigate("weather/$cityName") {
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
+    fun navigateToWeatherByCityName(name: String) {
+        navController.navigate("weatherByName/$name")
     }
-
-    fun navigateToFavorite() {
-        navController.navigate(Destinations.FAVORITE_ROUTE) {
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
+    fun navigateToWeatherByCityId(id: Int) {
+        navController.navigate("weatherById/$id")
     }
 
 }

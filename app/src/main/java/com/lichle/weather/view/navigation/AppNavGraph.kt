@@ -34,7 +34,14 @@ fun AppNavGraph(
             composable(
                 route = Destinations.FAVORITE_ROUTE,
             ) {
-                CityListScreen(navController = navController)
+                CityListScreen(
+                    onSearchClick = { name ->
+                        navActions.navigateToWeatherByCityName(name)
+                    },
+                    onItemClick = {
+                        navActions.navigateToWeatherByCityId(it.id)
+                    }
+                )
             }
 
             composable(

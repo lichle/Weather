@@ -1,8 +1,11 @@
 package com.lichle.weather.view.screen.weather
 
+import android.os.Parcelable
 import com.lichle.weather.domain.City
 import com.lichle.weather.domain.WeatherSummary
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class WeatherUiModel(
     val id: Int,
     val name: String,
@@ -27,7 +30,7 @@ data class WeatherUiModel(
     val sunset: Long,
     val timestamp: Long,
     val timezone: Int
-) {
+) : Parcelable {
     fun deepCopy(): WeatherUiModel {
         return WeatherUiModel(
             id = id,
@@ -57,12 +60,13 @@ data class WeatherUiModel(
     }
 }
 
+@Parcelize
 data class WeatherSummaryUiModel(
     val id: Int,
     val main: String,
     val description: String,
     val icon: String
-) {
+) : Parcelable {
     fun deepCopy(): WeatherSummaryUiModel {
         return WeatherSummaryUiModel(
             id = id,

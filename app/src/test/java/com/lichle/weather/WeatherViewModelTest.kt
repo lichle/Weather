@@ -1,5 +1,6 @@
 package com.lichle.weather
 
+import androidx.lifecycle.SavedStateHandle
 import com.lichle.core_common.ErrorCodes
 import com.lichle.weather.domain.Response
 import com.lichle.weather.domain.city.AddCityUseCase
@@ -19,7 +20,6 @@ import org.mockito.kotlin.whenever
 import com.lichle.weather.setup.data.getMockCity
 import com.lichle.weather.setup.data.getMockWeatherDto
 import com.lichle.weather.view.screen.weather.WeatherIntent
-import com.lichle.weather.view.screen.weather.WeatherState
 import com.lichle.weather.view.screen.weather.WeatherViewModel
 import com.google.common.truth.Truth.assertThat
 import com.lichle.weather.setup.MainCoroutineRule
@@ -31,7 +31,7 @@ class WeatherViewModelTest {
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
 
-    // Use mocked use cases to be injected into the viewmodel
+    // Use mocked use cases to be injected into the ViewModel
     private lateinit var _searchCityUseCase: SearchCityUseCase
     private lateinit var _addCityUseCase: AddCityUseCase
     private lateinit var _getCityUseCase: GetCityUseCase
@@ -39,6 +39,7 @@ class WeatherViewModelTest {
 
     // Subject under test
     private lateinit var _weatherViewModel: WeatherViewModel
+    private lateinit var savedStateHandle: SavedStateHandle
 
     // Sample weather data
     private val sampleWeatherUiModel = getMockWeatherDto()
@@ -49,8 +50,10 @@ class WeatherViewModelTest {
         _addCityUseCase = mock()
         _getCityUseCase = mock()
         _fetchCityUseCase = mock()
+        savedStateHandle = SavedStateHandle()
 
         _weatherViewModel = WeatherViewModel(
+            savedStateHandle,
             _searchCityUseCase,
             _addCityUseCase,
             _getCityUseCase,
@@ -73,11 +76,11 @@ class WeatherViewModelTest {
         _weatherViewModel.processIntent(WeatherIntent.SearchWeather(cityName = "London"))
 
         // Then verify the state is updated correctly
-        val state = _weatherViewModel.state.first()
-        assertThat(state).isInstanceOf(WeatherState.FetchWeatherDataSuccess::class.java)
-        state as WeatherState.FetchWeatherDataSuccess
-        assertThat(state.weather.name).isEqualTo("Hue")
-        assertThat(state.isFavorite).isFalse()
+        val uiState = _weatherViewModel.state.first()
+        assertThat(uiState.isLoading).isFalse()
+        assertThat(uiState.weather).isNotNull()
+        assertThat(uiState.weather?.name).isEqualTo("Hue")
+        assertThat(uiState.isFavorite).isFalse()
     }
 
     @Test
@@ -92,10 +95,11 @@ class WeatherViewModelTest {
         _weatherViewModel.processIntent(WeatherIntent.SearchWeather(cityId = 1))
 
         // Then verify the state
-        val state = _weatherViewModel.state.first()
-        assertThat(state).isInstanceOf(WeatherState.FetchWeatherDataSuccess::class.java)
-        state as WeatherState.FetchWeatherDataSuccess
-        assertThat(state.isFavorite).isTrue()
+        val uiState = _weatherViewModel.state.first()
+        assertThat(uiState.isLoading).isFalse()
+        assertThat(uiState.weather).isNotNull()
+        assertThat(uiState.weather?.name).isEqualTo("Hue")
+        assertThat(uiState.isFavorite).isTrue()
     }
 
     @Test
@@ -114,11 +118,12 @@ class WeatherViewModelTest {
 
         // When searching and adding to favorites
         _weatherViewModel.processIntent(WeatherIntent.SearchWeather(cityName = "London"))
-        _weatherViewModel.processIntent(WeatherIntent.AddWeather)
+        _weatherViewModel.processIntent(WeatherIntent.AddToFavorites)
 
         // Then verify the state
-        val state = _weatherViewModel.state.first()
-        assertThat(state).isInstanceOf(WeatherState.AddToFavoritesSuccess::class.java)
+        val uiState = _weatherViewModel.state.first()
+        assertThat(uiState.weather).isNotNull()
+        assertThat(uiState.isFavorite).isTrue()
     }
 
     @Test
@@ -132,10 +137,9 @@ class WeatherViewModelTest {
         _weatherViewModel.processIntent(WeatherIntent.SearchWeather(cityName = "NonexistentCity"))
 
         // Then verify error state
-        val state = _weatherViewModel.state.first()
-        assertThat(state).isInstanceOf(WeatherState.Empty::class.java)
-        state as WeatherState.Empty
-        assertThat(state.error?.code).isEqualTo(ErrorCodes.NOT_FOUND)
+        val uiState = _weatherViewModel.state.first()
+        assertThat(uiState.isLoading).isFalse()
+        assertThat(uiState.error?.code).isEqualTo(ErrorCodes.NOT_FOUND)
     }
 
     @Test
@@ -144,7 +148,8 @@ class WeatherViewModelTest {
         _weatherViewModel.processIntent(WeatherIntent.SearchWeather())
 
         // Then verify empty state
-        val state = _weatherViewModel.state.first()
-        assertThat(state).isInstanceOf(WeatherState.Empty::class.java)
+        val uiState = _weatherViewModel.state.first()
+        assertThat(uiState.weather).isNull()
+        assertThat(uiState.isLoading).isFalse()
     }
 }

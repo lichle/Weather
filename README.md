@@ -14,14 +14,14 @@
 
 
 ## Project structure
-- Data folder: 
-	- local folder: manages data stored on the device
-	- remote folder: handles network operations and API interactions
+- Data package: 
+	- local package: manages data stored on the device
+	- remote package: handles network operations and API interactions
 	- repository folder: Acts as the mediator between the data sources (local and remote) and Domain layer
-- Domain folder: contains usecases for execute business logic, interacts with the repository to get necessary data and transform it for the presentation layer.
-- View folder: deals with the user interface and user interaction
-	- navigation folder: manages the flow between different screens or components of the app
-	- screen folder: contains UI components and the logic associated with the visual representation of the app
+- Domain package: contains usecases for execute business logic, interacts with the repository to get necessary data and transform it for the presentation layer.
+- View package: deals with the user interface and user interaction
+	- navigation package: manages the flow between different screens or components of the app
+	- screen package: contains UI components and the logic associated with the visual representation of the app
 
 
 ## Task list

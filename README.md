@@ -12,9 +12,10 @@
 	- View: represents the user interface (UI) that displays data and receives user inputs (e.g., buttons, text fields).
 	- ViewModel: Acts as a bridge between the View and the Model. It manages the UI-related logic, transforms data from the Model, and exposes it to the View. It also handles user actions and updates the Model or its internal state accordingly.
 
-Why Unidirectional MVVM?
-**Unidirectional MVVM**: The flow of data in one direction— from the Model to the ViewModel to the View and back—ensures that the application’s state is predictable. Since state changes always flow in one direction, it’s easier to track how data moves through the system, which reduces the likelihood of bugs.
-**Traditional MVVM**: In traditional MVVM, especially with two-way data binding, state changes can happen in multiple directions, often simultaneously. The View can directly modify the ViewModel or even the Model, making it harder to trace where the state is being changed. This can lead to unpredictable behavior and harder-to-debug issues.
+## Why Unidirectional MVVM?
+- Unidirectional MVVM: The flow of data in one direction— from the Model to the ViewModel to the View and back—ensures that the application’s state is predictable. Since state changes always flow in one direction, it’s easier to track how data moves through the system, which reduces the likelihood of bugs.
+- Traditional MVVM: In traditional MVVM, especially with two-way data binding, state changes can happen in multiple directions, often simultaneously. The View can directly modify the ViewModel or even the Model, making it harder to trace where the state is being changed. This can lead to unpredictable behavior and harder-to-debug issues.
+
 
 ## Project structure
 - Data package: 
